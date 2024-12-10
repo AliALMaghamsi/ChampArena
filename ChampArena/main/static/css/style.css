@@ -1,15 +1,31 @@
 :root {
     --primary-color: #00ff9d;
     --secondary-color: #1a1a1a;
-    --accent-color: #32fbe2;
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.87);
+    --accent-green: #00ff9d;
+    --accent-blue: #0066ff;
+    --gradient-dark: linear-gradient(135deg, var(--dark-bg) 0%, #2a2a2a 100%);
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--secondary-color);
-    color: white;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
 }
 
+
+
+.section-title {
+    color: var(--accent-green);
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+}
 
 .navbar {
     background-color: rgba(26, 26, 26, 0.95);
@@ -33,8 +49,207 @@ body {
 }
 
 
+.hero-section {
+    background: var(--gradient-dark);
+    min-height: 100vh;
+    padding: 8rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0, 255, 157, 0.1) 0%, transparent 70%);
+}
+
+.hero-section h1 {
+    color: var(--accent-green);
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+}
+
+.hero-section .lead {
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.app-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.app-buttons .btn {
+    background: transparent;
+    border: 2px solid var(--accent-green);
+    color: var(--text-primary);
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.app-buttons .btn:hover {
+    background: var(--accent-green);
+    color: var(--dark-bg);
+    transform: translateY(-3px);
+}
 
 
+.features-section {
+    background: var(--gradient-dark);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--accent-green);
+    margin-bottom: 1.5rem;
+}
+
+.feature-title {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.feature-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.game-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--accent-green), var(--accent-blue));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-card:hover::before {
+    opacity: 0.1;
+}
+
+.game-image-wrapper {
+    position: relative;
+    padding-top: 75%;
+    overflow: hidden;
+}
+
+.game-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.game-card:hover .game-image {
+    transform: scale(1.1);
+}
+
+.game-content {
+    padding: 2rem;
+    position: relative;
+}
+
+.game-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.stat-item i {
+    color: var(--accent-green);
+}
+
+.game-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.game-tag {
+    background: rgba(0, 255, 157, 0.1);
+    color: var(--accent-green);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+}
 
 
 
