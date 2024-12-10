@@ -2,28 +2,42 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
-class ActivityName(models.Model):
+class ActivityCategory(models.Model):
     
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
 
-class Activity(models.Model):
-    
-    name = models.ForeignKey(ActivityName, on_delete=models.CASCADE, related_name='activities')
-    description = models.TextField()
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_activities')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    activity_date = models.DateTimeField()
-    location = models.CharField(max_length=255)  # Optional descriptive address
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    price_per_person = models.DecimalField(max_digits=10, decimal_places=2)
+
+class ActivityName(models.Model):
+   
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(ActivityCategory, on_delete=models.CASCADE, related_name='activity_names')
 
     def __str__(self):
-        return f"{self.name} ({self.activity_date.strftime('%Y-%m-%d')})"
+        return f"{self.name} ({self.category.name})"
+
+class Activity(models.Model):
+    STATUS_CHOICES = [
+        ('in_review', 'In Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    name = models.ForeignKey(ActivityName, on_delete=models.CASCADE)
+    description = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField() 
+    end_date = models.DateTimeField()  
+    location = models.CharField(max_length=255)  
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    price_per_person = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=10,choices=STATUS_CHOICES,default='in_review')
+    
+    def __str__(self):
+        return f"{self.name} ({self.start_date} - {self.end_date})"
 
 
 class ActivityParticipant(models.Model):
@@ -33,8 +47,8 @@ class ActivityParticipant(models.Model):
         ('Joined', 'Joined'),
         ('Completed', 'Completed'),
     ]
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='participants')
-    participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities_joined')
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
