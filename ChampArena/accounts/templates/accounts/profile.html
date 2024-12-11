@@ -1,33 +1,59 @@
-
 {% extends 'main/base.html' %}
 {% load static %}
 {% block title %}Your Profile{% endblock %}
 
 {% block content %}
-    <!-- Profile Page Container -->
-    <div class="profile-page">
-        <div class="profile-container">
-            <h2>Welcome, {{ user.username }}</h2>
+<div class="container d-flex justify-content-center mt-5">
 
-            <div class="profile-details">
-                <p><strong>Profile Picture:</strong>
-                    {% if user.profile.profile_picture %}
-                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
-                    {% else %}
-                        <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
-                    {% endif %}
-                </p>
+    <div class="card">
 
-                <p><strong>Wallet Balance:</strong> ${{ user.profile.wallet_balance }}</p>
-                <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
-                <p><strong>Location:</strong> {{ user.profile.location }}</p> <!-- Display location -->
+        <!-- Profile Picture and Name Section -->
+        <div class="top-container">
+            {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" class="img-fluid profile-image" width="70">
+            {% else %}
+                <img src="/static/default-avatar.png" class="img-fluid profile-image" width="70">
+            {% endif %}
+            <div class="ml-3">
+                <h5 class="name">{{ user.username }}</h5>
+                <p class="mail">{{ user.email }}</p>
             </div>
+        </div>
 
-            <div class="action-links">
-                <a href="{% url 'edit_profile' %}">Edit Profile</a>
-                <a href="{% url 'logout' %}" class="logout">Logout</a>
+        <!-- Balance Section -->
+        <div class="middle-container d-flex justify-content-between align-items-center mt-3 p-2">
+            <div class="dollar-div px-3">
+                <div class="round-div"><i class="fa fa-dollar dollar"></i></div>
             </div>
+            <div class="d-flex flex-column text-right mr-2">
+                <span class="current-balance">Wallet Balance</span>
+                <span class="amount"><span class="dollar-sign">$</span>{{ user.profile.wallet_balance }}</span>
+            </div>
+        </div>
+
+
+        <!-- Phone Number Section -->
+<div class="phone-border pt-2">
+    <span class="phone-label">Phone Number :</span>
+    <span class="phone-value">{{ user.profile.phone_number }}</span>
+</div>
+
+<!-- Location Section -->
+<div class="location-border pt-2">
+    <span class="location-label">Location : </span>
+    <span class="location-value">{{ user.profile.location }}</span>
+</div>
+         <div class="recent-border mt-2">
+            <span class="recent-orders">Recent Activity :</span>
+        </div>
+
+
+        <!-- Action Links -->
+        <div class="action-links mt-4">
+            <a href="{% url 'edit_profile' %}" class="edit-profile">Edit Profile</a>
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
         </div>
     </div>
 
+</div>
 {% endblock %}

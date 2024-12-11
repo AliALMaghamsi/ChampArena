@@ -20,14 +20,14 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('profile')
+            return redirect('main:home_page_view')
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('main:home_page_view')
 
 @login_required
 def profile(request):
