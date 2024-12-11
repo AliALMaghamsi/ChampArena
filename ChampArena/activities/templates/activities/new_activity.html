@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 mb-3">
     <h2 class="text-center mb-4">Create New Activity</h2>
 
     {% if messages %}
@@ -43,6 +43,16 @@
                             <option value="{{ activity.id }}">{{ activity.name }}</option>
                         {% endfor %}
                     </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Person Limit -->
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12 mb-3">
+                <div class="form-group">
+                    <label for="id_person_limit">Limit </label>
+                    <input type="number" class="form-control" id="id_person_limit" name="person_limit" min="1" required>
                 </div>
             </div>
         </div>
@@ -91,6 +101,16 @@
             <div id="map" style="height: 400px;" class="col-md-6 col-sm-12 mb-3"></div>
         </div>
 
+         <!-- Image Upload -->
+         <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12 mb-3">
+                <div class="form-group">
+                    <label for="id_image">Upload Image</label>
+                    <input type="file" class="form-control" id="id_image" name="image" accept="image/*" required>
+                </div>
+            </div>
+        </div>
+
         <!-- Price per Person -->
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12 mb-3">
@@ -100,6 +120,8 @@
                 </div>
             </div>
         </div>
+
+        
 
         <!-- Submit Button -->
         <div class="form-group text-center">
@@ -112,35 +134,67 @@
 
 {% block script %}
 <script>
-// Initialize map centered on Riyadh, Saudi Arabia
-var map = L.map('map').setView([24.7136, 46.6753], 13); // Default to Riyadh coordinates
-
-// Add OpenStreetMap tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-// Initialize the geocoder control and add it to the map
-var geocoder = L.Control.Geocoder.nominatim();
-var searchControl = L.Control.geocoder({
-    geocoder: geocoder,
-    placeholder: 'Search for a location...',
-    defaultMarkGeocode: false
-})
-.on('markgeocode', function(e) {
-    // When a location is selected, center the map on it
-    var latlng = e.geocode.center;
-    map.setView(latlng, 13);
-
-    // Add a marker at the selected location
-    var marker = L.marker(latlng).addTo(map);
-
-    // Update the latitude and longitude form fields
-    document.getElementById('id_latitude').value = latlng.lat;
-    document.getElementById('id_longitude').value = latlng.lng;
-})
-.addTo(map);
-</script>
+    // Initialize map centered on Riyadh, Saudi Arabia
+    var map = L.map('map').setView([24.7136, 46.6753], 13); // Default to Riyadh coordinates
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Initialize a marker variable (null initially)
+    var marker = null;
+    
+    // Function to set a marker at the given latitude and longitude
+    function setMarker(lat, lng) {
+        // Remove existing marker
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        // Add new marker
+        marker = L.marker([lat, lng]).addTo(map);
+        
+        // Update form fields
+        document.getElementById('id_latitude').value = lat;
+        document.getElementById('id_longitude').value = lng;
+    }
+    
+    // Automatically get the user's current location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            map.setView([userLat, userLng], 13);
+            setMarker(userLat, userLng); // Place marker at user's location
+        }, function(error) {
+            console.error("Geolocation error:", error);
+            alert("Unable to retrieve your location. Default location will be used.");
+        });
+    } else {
+        alert("Geolocation is not supported by your browser. Default location will be used.");
+    }
+    
+    // Allow user to click on the map to place a pin
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        setMarker(lat, lng);
+    });
+    
+    // Initialize the geocoder control for searching locations
+    var geocoder = L.Control.Geocoder.nominatim();
+    L.Control.geocoder({
+        geocoder: geocoder,
+        placeholder: 'Search for a location...',
+        defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+        var latlng = e.geocode.center;
+        map.setView(latlng, 13);
+        setMarker(latlng.lat, latlng.lng); // Set marker at searched location
+    })
+    .addTo(map);
+    </script>
 
 <script>
 // JavaScript to dynamically update activities based on selected category

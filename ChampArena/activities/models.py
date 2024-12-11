@@ -16,7 +16,7 @@ class ActivityName(models.Model):
     category = models.ForeignKey(ActivityCategory, on_delete=models.CASCADE, related_name='activity_names')
 
     def __str__(self):
-        return f"{self.name} ({self.category.name})"
+        return f"{self.name}"
 
 class Activity(models.Model):
     STATUS_CHOICES = [
@@ -33,6 +33,8 @@ class Activity(models.Model):
     location = models.CharField(max_length=255)  
     latitude = models.FloatField()
     longitude = models.FloatField()
+    image=models.ImageField(upload_to='images/')
+    person_limit=models.IntegerField()
     price_per_person = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10,choices=STATUS_CHOICES,default='in_review')
     

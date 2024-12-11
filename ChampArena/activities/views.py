@@ -19,7 +19,7 @@ def new_activity_view(request: HttpRequest):
         activity_form = ActivityForm(request.POST, request.FILES)
         print(request.POST['name'])
         if activity_form.is_valid():
-            activity = activity_form.save(commit=False)
+            activity:Activity = activity_form.save(commit=False)
             activity.created_by = request.user
             activity.save()
 
@@ -35,6 +35,30 @@ def new_activity_view(request: HttpRequest):
         "activities_name": activity_names,
         "today": today
     })
+
+def update_activity_view(request:HttpRequest, activity_id):
+    activity = Activity.objects.get(pk=activity_id)
+    categories = ActivityCategory.objects.all()
+    activity_names = ActivityName.objects.none()
+    if request.method == 'POST':
+        form = ActivityForm(request.POST,request.FILES, instance=activity)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Activity updated successfully!')
+            return redirect('main:home_page_view')
+        else:
+            messages.error(request, 'There was an error updating the activity.')
+
+    else:
+        form = ActivityForm(instance=activity)
+
+    return render(request, 'activities/update_activity.html', {
+        'form': form,
+        'activity': activity,
+        'categories': categories,
+        "activities_name": activity_names,
+    })
+
 
 def get_activities(request:HttpRequest, category_id):
     activities = ActivityName.objects.filter(category_id=category_id)
