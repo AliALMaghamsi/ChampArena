@@ -1,152 +1,33 @@
+
+{% extends 'main/base.html' %}
 {% load static %}
+{% block title %}Your Profile{% endblock %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Profile</title>
-    <style>
+{% block content %}
+    <!-- Profile Page Container -->
+    <div class="profile-page">
+        <div class="profile-container">
+            <h2>Welcome, {{ user.username }}</h2>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+            <div class="profile-details">
+                <p><strong>Profile Picture:</strong>
+                    {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
+                    {% else %}
+                        <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
+                    {% endif %}
+                </p>
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px;
-        }
+                <p><strong>Wallet Balance:</strong> ${{ user.profile.wallet_balance }}</p>
+                <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
+                <p><strong>Location:</strong> {{ user.profile.location }}</p> <!-- Display location -->
+            </div>
 
-        .container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        h2 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 10px;
-            text-align: left;
-        }
-
-        /* Profile picture styling */
-        img {
-            border-radius: 50%;
-            border: 2px solid #ddd;
-            margin: 10px 0;
-        }
-
-        .profile-details {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .profile-details p {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .profile-details strong {
-            color: #333;
-        }
-
-        /* Links styling */
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 16px;
-            margin-top: 20px;
-            display: inline-block;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .action-links {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .action-links a {
-            margin-right: 15px;
-        }
-
-        /* Button-like appearance for logout link */
-        .action-links a.logout {
-            background-color: #ff4d4d;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .action-links a.logout:hover {
-            background-color: #e04040;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                width: 90%;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            p, .action-links a {
-                font-size: 14px;
-            }
-
-            img {
-                width: 80px;  /* Smaller profile picture on smaller screens */
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Welcome, {{ user.username }}</h2>
-
-        <div class="profile-details">
-            <p><strong>Profile Picture:</strong>
-                {% if user.profile.profile_picture %}
-                    <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
-                {% else %}
-                    <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
-                {% endif %}
-            </p>
-
-            <p><strong>Wallet Balance:</strong> ${{ user.profile.wallet_balance }}</p>
-            <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
-            <p><strong>Location:</strong> {{ user.profile.location }}</p>  <!-- Display location -->
-        </div>
-
-        <div class="action-links">
-            <a href="{% url 'edit_profile' %}">Edit Profile</a>
-            <a href="{% url 'logout' %}" class="logout">Logout</a>
+            <div class="action-links">
+                <a href="{% url 'edit_profile' %}">Edit Profile</a>
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            </div>
         </div>
     </div>
-</body>
-</html>
+
+{% endblock %}
