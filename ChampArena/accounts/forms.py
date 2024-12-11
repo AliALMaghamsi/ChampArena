@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Profile
 
+
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput(), label="Confirm Password")
@@ -11,6 +12,12 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
+        help_texts = {
+            'username': None,
+            'email': None,
+            'first_name': None,
+            'last_name': None,
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -26,8 +33,7 @@ class RegistrationForm(forms.ModelForm):
         user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()
-            location = self.cleaned_data['location']
-            profile = Profile.objects.create(user=user, location=location)
+            Profile.objects.create(user=user, location=self.cleaned_data['location'])
         return user
 
 class LoginForm(AuthenticationForm):
