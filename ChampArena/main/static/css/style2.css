@@ -1,97 +1,417 @@
-/* Base styling for body and page layout */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: var(--dark-bg);
 }
 
-h2 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-/* Container for the login form */
-div {
-    background-color: white;
+.login-form {
+    background-color: var(--card-bg);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 40px;
     max-width: 400px;
     width: 100%;
-    margin: 20px;
 }
 
-form {
+.login-title {
+    color: var(--accent-green);
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-form-fields {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Styling for form inputs */
-input[type="text"],
-input[type="password"],
-button {
+.login-form-fields input[type="text"],
+.login-form-fields input[type="password"] {
     padding: 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 16px;
     width: 100%;
+    color: var(--text-primary);
+    background-color: var(--card-bg);
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
+.login-form-fields input[type="text"]:focus,
+.login-form-fields input[type="password"]:focus {
     outline: none;
-    border-color: #007BFF;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: var(--accent-green);
+    box-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
 }
 
-button {
-    background-color: #007BFF;
-    color: white;
+.login-button {
+    padding: 12px;
+    border-radius: 6px;
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
     border: none;
     cursor: pointer;
+    width: 100%;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+.register-link {
+    text-align: center;
+    margin: 10px;
 }
 
-/* Link styling */
-a {
-    color: #007BFF;
+.register-link-text {
+    color: var(--accent-green);
     text-decoration: none;
 }
 
-a:hover {
+.register-link-text:hover {
     text-decoration: underline;
 }
 
-p {
-    font-size: 14px;
-    color: #555;
-    text-align: center;
-}
-
-/* Small screen adjustments */
 @media (max-width: 600px) {
-    div {
+    .login-form {
         padding: 20px;
     }
 
-    h2 {
+    .login-title {
         font-size: 20px;
     }
 
-    input[type="text"],
-    input[type="password"],
-    button {
+    .login-form-fields input[type="text"],
+    .login-form-fields input[type="password"],
+    .login-button {
         font-size: 14px;
+    }
+}
+
+.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--dark-bg);
+}
+
+.register-container {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    margin: 50px;
+}
+
+.register-container h2 {
+    color: var(--accent-green);
+    font-size: 28px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.register-form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.register-form-fields label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.register-form-fields input[type="text"],
+.register-form-fields input[type="email"],
+.register-form-fields input[type="password"],
+.register-form-fields input[type="file"],
+.register-form-fields select {
+    padding: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    width: 100%;
+    color: var(--text-primary);
+    background-color: var(--card-bg);
+    transition: all 0.3s ease;
+}
+
+.register-form-fields input[type="text"]:focus,
+.register-form-fields input[type="email"]:focus,
+.register-form-fields input[type="password"]:focus,
+.register-form-fields input[type="file"]:focus,
+.register-form-fields select:focus {
+    outline: none;
+    border-color: var(--accent-green);
+    box-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+}
+
+.register-button {
+    padding: 14px;
+    border-radius: 6px;
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.existing-account {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.existing-account a {
+    color: var(--accent-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.existing-account a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .register-container {
+        padding: 20px;
+    }
+
+    .register-container h2 {
+        font-size: 24px;
+    }
+
+    .register-form-fields input[type="text"],
+    .register-form-fields input[type="email"],
+    .register-form-fields input[type="password"],
+    .register-form-fields input[type="file"],
+    .register-form-fields select,
+    .register-button {
+        font-size: 14px;
+    }
+}
+
+
+
+
+
+
+/* Profile Page Styles */
+.profile-page {
+    background-color: var(--dark-bg);
+    padding: 4rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.profile-container {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.profile-container h2 {
+    color: var(--accent-green);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+.profile-details {
+    margin-bottom: 2rem;
+}
+
+.profile-details p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 1rem 0;
+    line-height: 1.6;
+}
+
+.profile-details img {
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 255, 157, 0.2);
+}
+
+.profile-details strong {
+    color: var(--accent-green);
+    font-weight: 600;
+}
+
+
+.profile-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1rem;
+    gap: 1rem;
+}
+
+.profile-actions a {
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+    width: auto;
+    flex: 1;
+    max-width: 200px;
+}
+
+.profile-actions .logout {
+    background-color: #121212;
+    color: var(--text-primary);
+    border: 2px solid var(--accent-green);
+}
+
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 2rem;
+    }
+
+    .profile-container h2 {
+        font-size: 2rem;
+    }
+
+    .profile-details p {
+        font-size: 0.9rem;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .profile-actions a {
+        font-size: 1rem;
+    }
+}
+
+
+
+/* Edit Profile Page Styles */
+.edit-profile-page {
+    background-color: var(--dark-bg);
+    padding: 4rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.edit-profile-container {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.edit-profile-container h2 {
+    color: var(--accent-green);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+.edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.edit-profile-form input,
+.edit-profile-form select,
+.edit-profile-form textarea {
+    background-color: var(--card-bg);
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 1rem;
+    color: var(--text-primary);
+    width: 100%;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edit-profile-form input:focus,
+.edit-profile-form select:focus,
+.edit-profile-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-green);
+    box-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+}
+
+.edit-profile-form button {
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+
+
+.edit-profile-form a {
+    color: var(--accent-green);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 1rem;
+    transition: color 0.3s ease;
+}
+
+.edit-profile-form a:hover {
+    color: #00cc66;
+}
+
+@media (max-width: 768px) {
+    .edit-profile-container {
+        padding: 2rem;
+    }
+
+    .edit-profile-container h2 {
+        font-size: 2rem;
+    }
+
+    .edit-profile-form input,
+    .edit-profile-form select,
+    .edit-profile-form textarea {
+        font-size: 0.9rem;
+    }
+
+    .edit-profile-form button {
+        font-size: 1rem;
     }
 }
