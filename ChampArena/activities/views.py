@@ -63,38 +63,3 @@ def update_activity_view(request:HttpRequest, activity_id):
 def get_activities(request:HttpRequest, category_id):
     activities = ActivityName.objects.filter(category_id=category_id)
     return JsonResponse({'activities': list(activities.values('id', 'name'))})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#mohammed
-

@@ -1,0 +1,152 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    All activities
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+        <form action="{% url 'activities:all_activities_view' %}" method="GET" class="w-100">
+            <div class="row g-2">
+                
+                <div class="col-12 col-md">
+                    <input 
+                        type="search" 
+                        class="form-control bg-dark text-white" 
+                        value="{{ request.GET.search }}" 
+                        name="search"
+                        
+                    />
+                </div>
+                
+                <div class="col-12 col-md">
+                    <select class="form-control bg-dark text-white" id="id_category" name="category" >
+                        <option value="" >Select Category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" >{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                
+                <div class="col-12 col-md">
+                    <select class="form-control bg-dark text-white" id="id_activity_name" name="name" >
+                        <option value="">Select Activity</option>
+                        {% for activity in activities_name %}
+                            <option value="{{ activity.id }}">{{ activity.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+               
+                <div class="col-12 col-md-auto">
+                    <input type="submit" value="Apply" class="btn btn-success w-100" />
+                </div>
+            </div>
+        </form>
+        {% if request.user.is_staff %}
+        <a 
+            href="{% url 'activities:new_activity_view' %}" 
+            class="btn btn-success mt-2 mt-md-0 align-self-start align-self-md-center w-100 w-md-auto">
+            Add activity +
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="games-grid">
+
+        {% for activity in activities  %}
+        <div class="game-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="game-image-wrapper">
+                <img src="{{activity.image.url}}" alt="Football" class="game-image">
+            </div>
+            <div class="game-content">
+                <h3 class="game-title">{{activity.title}}</h3>
+                <div class="game-stats">
+                    <span class="stat-item">
+                        <i class="bi bi-person-fill"></i>
+                        {{activity.person_limit}}
+                    </span>
+                    <span class="stat-item">
+                        <i class="bi bi-star-fill"></i>
+                        {{activity.name}}
+                    </span>
+                </div>
+                <div class="game-tags">
+                    <span class="game-tag">Limit : {{activity.person_limit}}</span>
+                    <span class="game-tag">Price: {{activity.price_per_person}}</span>
+                </div>
+            </div>
+        </div>    
+        {% endfor %}   
+        
+    </div>
+    
+    
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if activities.has_previous %}
+                <li class="page-item">
+                    <a class="page-link text-decoration-underline text-dark" href="?page=1">
+                        First
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?page={{ activities.previous_page_number }}">
+                        Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ activities.number }} of {{ activities.paginator.num_pages }}</span>
+                </li>
+
+                {% if activities.has_next %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?page={{ activities.next_page_number }}">
+                        Next
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-decoration-underline text-dark" href="?page={{ activities.paginator.num_pages }}">
+                        Last
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    // JavaScript to dynamically update activities based on selected category
+    document.getElementById("id_category").addEventListener("change", function() {
+        var categoryId = this.value;
+        if (categoryId) {
+            fetch(`/activities/get-activities/${categoryId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    var activitySelect = document.getElementById("id_activity_name");
+                    activitySelect.innerHTML = '<option value="">Select Activity</option>';
+                    data.activities.forEach(function(activity) {
+                        var option = document.createElement("option");
+                        option.value = activity.id;
+                        option.textContent = activity.name;
+                        activitySelect.appendChild(option);
+                    });
+                });
+        } else {
+            var activitySelect = document.getElementById("id_activity_name");
+            activitySelect.innerHTML = '<option value="">Select Activity</option>';
+        }
+    });
+    </script>
+{% endblock script %}
+    
