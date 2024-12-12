@@ -1,0 +1,29 @@
+{% extends "main/base.html" %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="text-center">
+        <h1 class="text-success display-4">✅ Payment Successful!</h1>
+        <p class="lead">Your payment was completed successfully. Thank you for your purchase!</p>
+        <p id="countdown-text" class="text-white">You will be redirected to your profile in 10 seconds...</p>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-primary mt-4">Go to Profile Now</a>
+    </div>
+</div>
+
+<script>
+    let countdown = 10; // Start countdown from 10
+    const countdownText = document.getElementById("countdown-text");
+
+    const interval = setInterval(() => {
+        countdown -= 1;
+        countdownText.textContent = `You will be redirected to your profile in ${countdown} seconds...`;
+
+        if (countdown <= 0) {
+            clearInterval(interval);
+            window.location.href = "{% url 'accounts:profile' %}"; // Redirect to profile
+        }
+    }, 1000); // Update every 1 second
+</script>
+{% endblock %}
