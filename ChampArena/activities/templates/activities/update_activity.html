@@ -22,7 +22,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
-        <!-- Activity Category (editable dropdown) -->
+        <!-- Activity Category  -->
         <div class="row justify-content-center">
             <div class="col-md-6 col-sm-12 mb-3">
                 <div class="form-group">
@@ -33,7 +33,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                <!-- Activity Name (editable text input) -->
+                <!-- Activity Name -->
                 <div class="form-group">
                     <label for="id_activity_name">Activity</label>
                     <select class="form-control" id="id_activity_name" name="name" required>
@@ -45,6 +45,17 @@
                 </div>
                 
                 
+            </div>
+        </div>
+
+        <!-- Activity Title -->
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12 mb-3">
+                <div class="form-group">
+                    <label for="id_title" class="form-label">Title</label>
+                    <input type="text" name="title" id="id_title" class="form-control" required value="{{activity.title}}">
+                </div>
+               
             </div>
         </div>
 
