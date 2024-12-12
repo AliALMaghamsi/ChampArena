@@ -6,42 +6,102 @@
 <section class="game-details-hero">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6" data-aos="fade-right">
+            <div class="col-lg-4" data-aos="fade-right">
                 <div class="game-image-container">
-                    <img src="https://placehold.co/600x400" alt="Chess Game" class="img-fluid rounded-lg game-main-image">
-                    <div class="game-image-gallery">
+                    <img src="{{activities.image.url}}" alt="Chess Game" class="img-fluid rounded-lg game-main-image">
                     
-                    </div>
                 </div>
             </div>
-            <div class="col-lg-6" data-aos="fade-left">
+            <div class="col-lg-6" data-aos="fade-left ">
                 <div class="game-info">
-                    <h1 class="game-title"></h1>
+                    <h1 class="game-title">{{activities.name}}</h1>
                     <div class="game-meta">
-                        <span class="game-rating">
-                            <i class="bi bi-star-fill"></i>
-                            4.8/5 (2.5k+ reviews)
-                        </span>
-                        <span class="game-players">
-                            <i class="bi bi-people-fill"></i>
-                            2,500+ Active Players
-                        </span>
+                       
                     </div>
                     <div class="game-price-info">
                         <div class="game-price">
-                            <span class="price-label">Starting from</span>
-                            <span class="price-amount">$15</span>
-                            <span class="price-period">/ session</span>
+                            <span class="price-label">price</span>
+                            <span class="price-amount">${{activities.price_per_person}}</span>
+                            
                         </div>
                         <div class="game-price">
                             <span class="price-label">date</span>
-                            <span class="price-amount"></span>
-                            <span class="price-period">/ session</span>
+                            <span class="price-amount" style="font-size: 1rem;">{{activities.start_date}}</span>
+                            <span class="price-period"></span>
                         </div>
                         <button class="btn btn-primary btn-lg book-now-btn">
                             Book Now
                             <i class="bi bi-arrow-right"></i>
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Game Details Content -->
+<section class="game-details-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Game Description -->
+                <div class="content-section" data-aos="fade-up">
+                    <h2>About This Game</h2>
+                    <p>{{activities.description}}</p>
+                    
+                    <div class="game-features">
+                      
+                        <div class="feature-item">
+                           
+                           
+                            <span class="game-players">
+                                <i class="bi bi-people-fill"></i>
+                                {{activities.person_limit}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+              
+
+                <!-- Location -->
+                <div class="content-section" data-aos="fade-up">
+                    <h2>Location</h2>
+                    <div class="location-info">
+                        <i class="bi bi-geo-alt"></i>
+                        <div>
+                            <h4>{{activities.location}}</h4>
+                            <a 
+                            href="https://www.google.com/maps/search/?api=1&query={{ activities.location|urlencode }}" 
+                            target="_blank" 
+                            class="text-decoration-underline text-info"
+                        >
+                            {{ activities.location }}
+                        </a>
+                            <p><br> {{activities.start_date|time}} - {{activities.end_date|time}} PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                
+                    <div class="host-card">
+                        <div class="host-info">
+                            <img src="" class="host-image">
+                            <div>
+                                <h4> Host</h4>
+                                <p>{{activities.created_by.username}}</p>
+                              
+                            </div>
+                        </div>
+                        <a 
+                        href="https://wa.me/{{ activities.created_by.phone_number }}?text=Hi, I am interested in your activity {{ activity.title }}." 
+                        target="_blank" 
+                        class="btn btn-outline-primary w-100 mt-3">
+                        Contact Host
+                    </a>
                     </div>
                 </div>
             </div>

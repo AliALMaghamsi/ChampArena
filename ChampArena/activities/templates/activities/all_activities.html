@@ -74,12 +74,23 @@
                         {{activity.name}}
                     </span>
                 </div>
+            <section class="games-section" id="games">
+              <div class="container">
                 <div class="game-tags">
-                    <span class="game-tag">Limit : {{activity.person_limit}}</span>
-                    <span class="game-tag">Price: {{activity.price_per_person}}</span>
-                </div>
+                    
+                    <span class="game-tag">Price: {{activity.price_per_person}}</span>   
+                    <div class="app-buttons">
+                        <a href="{% url 'activities:detail_activity_view' activity.id %}" class="btn btn-lg me-3 animate-pulse me-9">
+                            <i class="bi bi-apple me-2"></i>join
+                        </a>
+                     </div>
+               
+            </section>
             </div>
-        </div>    
+           
+        </div>  
+       
+
         {% endfor %}   
         
     </div>
