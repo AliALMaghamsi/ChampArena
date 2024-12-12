@@ -1,0 +1,80 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Tasks</h1>
+            <p class="text-secondary mb-0">Manage and track your team's tasks</p>
+        </div>
+    </div>
+            <form method="get" class="d-flex align-items-center">
+                <div class="col-md-3 ">
+                    <select class="form-select" name="priority" onchange="this.form.submit()">
+
+                    </select>
+                </div>
+            </form>
+
+    <div>
+        <div class="card-body mt-4">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Project</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Assignee</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-check2-square me-2"></i>
+                                    <div>
+                                        <h6 class="mb-0"></h6>
+                                        <small class="text-secondary"></small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td><span class="task-priority "></span></td>
+                            <td><span class="task-priority"></span></td>
+                            <td></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+
+                                        <img src="" alt="" class="rounded-circle me-2" width="24">
+
+                                        <img src="" alt="" class="rounded-circle me-2" width="24">
+
+                                    <span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <a href="{}"><button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button></a>
+                                    <a href=""><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></a>
+                                </div>
+                            </td>
+                        </tr>
+                </tbody>
+                </table>
+            </div>
+            <nav class="d-flex justify-content-between align-items-center mt-4">
+                <p class="text-secondary mb-0"></p>
+                <ul class="pagination mb-0">
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

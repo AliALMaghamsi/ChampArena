@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
+from django.core.paginator import Paginator
 from .forms import ActivityForm
 from .models import Activity, ActivityName, ActivityCategory
 
@@ -44,7 +45,7 @@ def update_activity_view(request:HttpRequest, activity_id):
         form = ActivityForm(request.POST,request.FILES, instance=activity)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Activity updated successfully!')
+            messages.success(request, 'Activity updated successfully!','danger')
             return redirect('main:home_page_view')
         else:
             messages.error(request, 'There was an error updating the activity.')
@@ -63,10 +64,3 @@ def update_activity_view(request:HttpRequest, activity_id):
 def get_activities(request:HttpRequest, category_id):
     activities = ActivityName.objects.filter(category_id=category_id)
     return JsonResponse({'activities': list(activities.values('id', 'name'))})
-
-
-def detail_activity_view(request:HttpRequest,activity_id):
-    activities=Activity.objects.get(pk=activity_id)
-    
-
-    return render(request,"activities/activity_detail.html",{"activities":activities})
