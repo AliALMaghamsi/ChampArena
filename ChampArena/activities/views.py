@@ -63,3 +63,10 @@ def update_activity_view(request:HttpRequest, activity_id):
 def get_activities(request:HttpRequest, category_id):
     activities = ActivityName.objects.filter(category_id=category_id)
     return JsonResponse({'activities': list(activities.values('id', 'name'))})
+
+
+def detail_activity_view(request:HttpRequest,activity_id):
+    activities=Activity.objects.get(pk=activity_id)
+    
+
+    return render(request,"activities/activity_detail.html",{"activities":activities})
