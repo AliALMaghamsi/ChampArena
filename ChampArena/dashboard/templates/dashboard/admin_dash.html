@@ -1,0 +1,12 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+  <h1>Admin Dashboard</h1>
+  <p>Welcome to the admin dashboard. You can manage activity categories, names, and statuses here.</p>
+
+  <ul>
+    <li><a href="{% url 'admin:activity_activitycategory_changelist' %}">Manage Activity Categories</a></li>
+    <li><a href="{% url 'admin:activity_activityname_changelist' %}">Manage Activity Names</a></li>
+    <li><a href="{% url 'admin:activity_activity_changelist' %}">Manage Activities</a></li>
+  </ul>
+{% endblock %}

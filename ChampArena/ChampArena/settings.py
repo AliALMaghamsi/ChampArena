@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'activities',
     'accounts',
     'payment',
+    'dashboard',
     
 ]
 

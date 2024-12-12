@@ -31,11 +31,11 @@
                     <li class="nav-item"><a class="nav-link" href="#about">about</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
 {% if user.is_authenticated %}
-                                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li> <!-- Profile Link -->
+                                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li> <!-- Profile Link -->
 
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link nav-button" href="{% url 'register' %}">Join Now</a></li>
+                        <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
                     {% endif %}                </ul>
             </div>
         </div>
