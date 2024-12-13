@@ -15,16 +15,28 @@
             <div class="collapse navbar-collapse" id="sidebarMenu">
                 <ul class="nav flex-column w-100">
                     <li class="nav-item mt-4">
-                        <a class="nav-link text-light" href="#tasks">Activities</a>
+                        <form method="get" action="{% url 'dashboards:admin_dashboard_view' %}">
+                            <input type="hidden" name="section" value="activities">
+                            <button type="submit" class="btn btn-link nav-link text-light text-start" >Activities</button>
+                        </form>
                     </li>
                     <li class="nav-item mt-4">
-                        <a class="nav-link text-light" href="#projects">Activity Category</a>
+                        <form method="get">
+                            <input type="hidden" name="section" value="category">
+                            <button type="submit" class="btn btn-link nav-link text-light text-start">Activity Category</button>
+                        </form>
                     </li>
                     <li class="nav-item mt-4">
-                        <a class="nav-link text-light" href="#tasks">Activity Name</a>
+                        <form method="get">
+                            <input type="hidden" name="section" value="name">
+                            <button type="submit" class="btn btn-link nav-link text-light text-start">Activity Name</button>
+                        </form>
                     </li>
                     <li class="nav-item mt-4">
-                        <a class="nav-link text-light" href="#projects">Contact messages</a>
+                        <form method="get">
+                            <input type="hidden" name="section" value="messages">
+                            <button type="submit" class="btn btn-link nav-link text-light text-start">Contact</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -32,20 +44,10 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="mb-1">Tasks</h1>
-                <p class="text-secondary mb-0">Manage and track your team's tasks</p>
-            </div>
-        </div>
-                <form method="get" class="d-flex align-items-center">
-                    <div class="col-md-3 ">
-                        <select class="form-select" name="priority" onchange="this.form.submit()">
-
-                        </select>
-                    </div>
-                </form>
+     
+     {% if section == 'activities' %}
+     <div class="container py-4">
+        
 
         <div>
             <div class="card-body mt-4">
@@ -53,48 +55,44 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Task</th>
-                                <th>Project</th>
-                                <th>Priority</th>
-                                <th>Status</th>
-                                <th>Due Date</th>
-                                <th>Assignee</th>
-                                <th>Actions</th>
+                                <th class="text-center">Activity</th>
+                                <th class="text-center">Title</th>
+                                <th class="text-center">Description</th>
+                                <th class="text-center">Image</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
+                    
                         <tbody>
+                            {% for activity in display %}
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-check2-square me-2"></i>
-                                        <div>
-                                            <h6 class="mb-0"></h6>
-                                            <small class="text-secondary"></small>
-                                        </div>
-                                    </div>
+                                <td class="text-center">
+                                    {{activity.id}}
                                 </td>
-                                <td></td>
-                                <td><span class="task-priority "></span></td>
-                                <td><span class="task-priority"></span></td>
-                                <td></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-
-                                            <img src="" alt="" class="rounded-circle me-2" width="24">
-
-                                            <img src="" alt="" class="rounded-circle me-2" width="24">
-
-                                        <span></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-2 align-items-center">
-                                        <a href="{}"><button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button></a>
-                                        <a href=""><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></a>
-                                    </div>
+                                <td class="text-center">{{activity.title}}</td>
+                                <td class="text-center">{{activity.description}}</td>
+                                <td class="text-center"><img src="{{activity.image.url}}" alt="" style="height: 250px; width: 250px;"></td>
+                                <td class="text-center">{{activity.get_status_display}}</td>
+                                <td class="d-flex align-content-centent justify-content-center">
+                                    
+                                    <button type="button" class="btn btn-success mx-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"></path>
+                                        </svg>
+                                        Approve
+                                    </button>
+                                    <button type="button" class="btn btn-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
+                                        </svg>
+                                        Reject
+                                        
+                                    </button>
                                 </td>
                             </tr>
-                    </tbody>
+                            {% endfor %}
+                        </tbody>
                     </table>
                 </div>
                 <nav class="d-flex justify-content-between align-items-center mt-4">
@@ -106,6 +104,9 @@
             </div>
         </div>
     </div>
+     {% endif %}
+        
+    
 </div>
 
 {% endblock %}

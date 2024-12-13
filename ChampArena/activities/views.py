@@ -89,8 +89,7 @@ def all_activities_view(request : HttpRequest):
     if "name" in request.GET and request.GET["name"]:
         activities = activities.filter(name__id=request.GET["name"])
 
-    page_number = request.GET.get("page", 1)
-    
-    paginator = Paginator(activities, 4)
+    page_number = request.GET.get("page")  
+    paginator = Paginator(activities,4)
     activities_page = paginator.get_page(page_number)
     return render(request,"activities/all_activities.html",context={"activities":activities_page,'categories':activities_category,'activities_name':activities_name})
