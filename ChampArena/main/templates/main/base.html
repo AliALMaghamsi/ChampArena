@@ -27,32 +27,28 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#activatis">activatis</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'activities:all_activities_view' %}">activatis</a></li>
+                    
+                    
                     <li class="nav-item"><a class="nav-link" href="#about">about</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-{% if user.is_authenticated %}
-                                        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li> <!-- Profile Link -->
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li> <!-- Profile Link -->
 
-                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link nav-button" href="{% url 'register' %}">Join Now</a></li>
-                    {% endif %}                </ul>
+                        <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
+                    {% endif %}                
+                </ul>
             </div>
         </div>
     </nav>
-        
+    
     <main>
+
+
         {% block content %}
-        <div class="container my-3">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
+         
         {% endblock  %} 
     </main>
 
