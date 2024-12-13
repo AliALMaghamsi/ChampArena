@@ -535,6 +535,7 @@ body {
     align-items: center;
     background-color: #000;
     padding-top: 70px;
+    padding-bottom: 70px;
 }
 
 .register-container {
