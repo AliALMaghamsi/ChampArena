@@ -3,19 +3,48 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-    <!-- Register Page Container -->
-    <div class="register-page">
-        <div class="register-container">
-            <h2>Register</h2>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Register</button>
-            </form>
+{% load static %}
 
-            <div class="existing-account">
-                <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
-            </div>
+<!-- Link to the Login-Specific CSS File -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
+
+<!-- Register Page Container -->
+<div class="register-page">
+
+    <div class="register-container">
+        <div class="existing-account">
+            <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
         </div>
+        <h2>Register</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="register-form-fields">
+                <label for="id_username">Username:</label>
+                {{ form.username }}
+
+                <label for="id_email">Email address:</label>
+                {{ form.email }}
+
+                <label for="id_first_name">First name:</label>
+                {{ form.first_name }}
+
+                <label for="id_last_name">Last name:</label>
+                {{ form.last_name }}
+
+                <label for="id_password1">Password:</label>
+                {{ form.password }}
+
+                <label for="id_password2">Confirm Password:</label>
+                {{ form.password2 }}
+
+                <label for="id_location">Location:</label>
+                {{ form.location }}
+
+                <button type="submit" class="register-button">Register</button>
+            </div>
+        </form>
+
+
     </div>
+</div>
 {% endblock %}

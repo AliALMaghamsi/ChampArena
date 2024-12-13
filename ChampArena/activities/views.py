@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
-from django.core.paginator import Paginator
 from .forms import ActivityForm
 from .models import Activity, ActivityName, ActivityCategory
 
@@ -45,7 +44,7 @@ def update_activity_view(request:HttpRequest, activity_id):
         form = ActivityForm(request.POST,request.FILES, instance=activity)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Activity updated successfully!','danger')
+            messages.success(request, 'Activity updated successfully!')
             return redirect('main:home_page_view')
         else:
             messages.error(request, 'There was an error updating the activity.')
@@ -64,25 +63,3 @@ def update_activity_view(request:HttpRequest, activity_id):
 def get_activities(request:HttpRequest, category_id):
     activities = ActivityName.objects.filter(category_id=category_id)
     return JsonResponse({'activities': list(activities.values('id', 'name'))})
-
-
-def all_activities_view(request : HttpRequest):
-    activities= Activity.objects.all()
-    activities_category=ActivityCategory.objects.all()
-    activities_name=ActivityName.objects.none()
-    
-    
-    if "search" in request.GET and len(request.GET["search"]) >= 3:
-        activities = Activity.objects.filter(title__contains=request.GET["search"])
-        
-    if "category" in request.GET and request.GET["category"]:
-
-        activities = activities.filter(name__category__id=request.GET["category"])
-
-    if "name" in request.GET and request.GET["name"]:
-        activities = activities.filter(name__id=request.GET["name"])
-
-    page_number = request.GET.get("page", 1)
-    paginator = Paginator(activities, 4)
-    activities_page = paginator.get_page(page_number)
-    return render(request,"activities/all_activities.html",context={"activities":activities_page,'categories':activities_category,'activities_name':activities_name})
