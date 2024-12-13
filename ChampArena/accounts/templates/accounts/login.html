@@ -3,17 +3,23 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <div class="login-page">
-        <div class="login-container">
-            <h2>Login</h2>
-            <form method="POST">
+    <!-- Load Static Files -->
+    {% load static %}
+
+    <!-- Link to the Login-Specific CSS File -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
+
+    <div class="login-container">
+        <div class="login-form">
+            <h2 class="login-title">Login</h2>
+            <form method="POST" class="login-form-fields">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit">Login</button>
+                <button type="submit" class="login-button">Login</button>
             </form>
 
-            <div class="no-account">
-                <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
+            <div class="register-link">
+                <p>Don't have an account? <a href="{% url 'accounts:register' %}" class="register-link-text">Register here</a></p>
             </div>
         </div>
     </div>

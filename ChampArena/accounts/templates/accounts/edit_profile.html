@@ -1,14 +1,17 @@
 {% extends 'main/base.html' %}
 
-{% block title %}edit{% endblock %}
+{% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-    <h2>Edit Profile</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Changes</button>
-    </form>
-    <br>
-    <a href="{% url 'accounts:profile' %}">Cancel</a>
+    <div class="edit-profile-page">
+        <div class="edit-profile-container">
+            <h2>Edit Profile</h2>
+            <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Save Changes</button>
+            </form>
+            <a href="{% url 'accounts:profile' %}">Cancel</a>
+        </div>
+    </div>
 {% endblock %}

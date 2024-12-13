@@ -89,7 +89,7 @@
                 
                     <div class="host-card">
                         <div class="host-info">
-                            <img src="" class="host-image">
+                            <img src="{{accounts.user.profile.avatar.url}}" class="host-image">
                             <div>
                                 <h4> Host</h4>
                                 <p>{{activities.created_by.username}}</p>
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <a 
-                        href="https://wa.me/{{ activities.created_by.phone_number }}?text=Hi, I am interested in your activity {{ activity.title }}." 
+                        href="https://wa.me/{{ activities.created_by.phone_number }}?text=Hi, I am interested in your activity {{ activities.title }}." 
                         target="_blank" 
                         class="btn btn-outline-primary w-100 mt-3">
                         Contact Host
