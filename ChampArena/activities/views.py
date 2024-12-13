@@ -67,7 +67,7 @@ def get_activities(request:HttpRequest, category_id):
 
 
 def all_activities_view(request : HttpRequest):
-    activities= Activity.objects.all()
+    activities = Activity.objects.filter(status='approved').order_by('start_date')
     activities_category=ActivityCategory.objects.all()
     activities_name=ActivityName.objects.none()
     
