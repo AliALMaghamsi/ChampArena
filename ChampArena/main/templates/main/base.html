@@ -27,15 +27,24 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#activatis">activatis</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'activities:all_activities_view' %}">activatis</a></li>
+                    <li class="nav-item">
+                        <a 
+                        href="{% url 'activities:new_activity_view' %}" 
+                        class="nav-link">
+                        Add activity +
+                    </a></li>
+                    
                     <li class="nav-item"><a class="nav-link" href="#about">about</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li> <!-- Profile Link -->
+
                         <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
-                    {% endif %}                </ul>
+                    {% endif %}                
+                </ul>
             </div>
         </div>
     </nav>
