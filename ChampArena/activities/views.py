@@ -118,9 +118,11 @@ def new_category_view(request:HttpRequest):
         messages.warning(request, "Access Denid!", "alert-warning")
         return redirect("main:home_page_view")
     
+    print(request.GET.get('section'))
     activity_category_form = ActivityCategoryForm()  
     if request.method == "POST":
         try:
+            
             activity_category_form=ActivityCategoryForm(request.POST)
             if activity_category_form.is_valid():
                 activity_category_form.save()

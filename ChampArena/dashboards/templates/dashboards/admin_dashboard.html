@@ -195,7 +195,7 @@
         <div class="d-flex flex-column mt-4">
             {% if request.user.is_staff %}
             <a 
-                href="{% url 'activities:new_category_view' %}" 
+                href="{% url 'activities:new_category_view'%}?section={{request.path}}?section=categories" 
                 class="btn btn-success mt-2 mt-md-0 align-self-start align-self-md-center w-100 w-md-auto">
                 Add Category +
             </a>
