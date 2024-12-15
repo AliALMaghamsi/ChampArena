@@ -2,6 +2,12 @@
 
 {% load static %}
 
+
+{% block title %}
+    Admin Dashboard
+{% endblock title %}
+    
+
 {% block content %}
 
 <div class="d-flex">
@@ -17,18 +23,18 @@
                     <li class="nav-item mt-4">
                         <form method="get" action="{% url 'dashboards:admin_dashboard_view' %}">
                             <input type="hidden" name="section" value="activities">
-                            <button type="submit" class="btn btn-link nav-link text-light text-start" >Activities</button>
+                            <button type="submit" class="btn btn-link nav-link text-light text-start">Activities</button>
                         </form>
                     </li>
                     <li class="nav-item mt-4">
                         <form method="get">
-                            <input type="hidden" name="section" value="category">
+                            <input type="hidden" name="section" value="categories">
                             <button type="submit" class="btn btn-link nav-link text-light text-start">Activity Category</button>
                         </form>
                     </li>
                     <li class="nav-item mt-4">
                         <form method="get">
-                            <input type="hidden" name="section" value="name">
+                            <input type="hidden" name="section" value="activity_names">
                             <button type="submit" class="btn btn-link nav-link text-light text-start">Activity Name</button>
                         </form>
                     </li>
@@ -45,68 +51,227 @@
 
     <!-- Main Content -->
      
-     {% if section == 'activities' %}
-     <div class="container py-4">
-        
-
-        <div>
-            <div class="card-body mt-4">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Activity</th>
-                                <th class="text-center">Title</th>
-                                <th class="text-center">Description</th>
-                                <th class="text-center">Image</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                    
-                        <tbody>
-                            {% for activity in display %}
-                            <tr>
-                                <td class="text-center">
-                                    {{activity.id}}
-                                </td>
-                                <td class="text-center">{{activity.title}}</td>
-                                <td class="text-center">{{activity.description}}</td>
-                                <td class="text-center"><img src="{{activity.image.url}}" alt="" style="height: 250px; width: 250px;"></td>
-                                <td class="text-center">{{activity.get_status_display}}</td>
-                                <td class="d-flex align-content-centent justify-content-center">
+    {% if section == 'activities' %}
+        <div class="container py-4">
+            <div>
+                <div class="card-body mt-4">
+                    <div class="table-responsive">
+                        <div  class="mb-2">
+                            <form method="get" class="d-flex">
+                                
+                                <div class="row">
+                                    <div class="col">
+                                        <select  name="page" class="form-select" onchange="this.form.submit()">
+                                            {% for page_number in display.paginator.page_range %}
+                                            <option value="{{ page_number }}" {% if display.number == page_number %}selected{% endif %}>
+                                                {{ page_number }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select name="status" class="form-select">
+                                            <option value="">All Statuses</option>
+                                            <option value="in_review" {% if request.GET.status == "in_review" %}selected{% endif %}>in_review</option>
+                                            <option value="approved" {% if request.GET.status == "approved" %}selected{% endif %}>Approved</option>
+                                            <option value="rejected" {% if request.GET.status == "rejected" %}selected{% endif %}>Rejected</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <select name="date" class="form-select">
+                                            <option value="">All Dates</option>
+                                            <option value="today" {% if request.GET.date == "today" %}selected{% endif %}>Today</option>
+                                            <option value="last7days" {% if request.GET.date == "last7days" %}selected{% endif %}>Last 7 Days</option>
+                                            <option value="thismonth" {% if request.GET.date == "thismonth" %}selected{% endif %}>This Month</option>
+                                        </select>
+                                    </div>
                                     
-                                    <button type="button" class="btn btn-success mx-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"></path>
-                                        </svg>
-                                        Approve
-                                    </button>
-                                    <button type="button" class="btn btn-danger">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
-                                        </svg>
-                                        Reject
-                                        
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <nav class="d-flex justify-content-between align-items-center mt-4">
-                    <p class="text-secondary mb-0"></p>
-                    <ul class="pagination mb-0">
+                                    <div class="col">
+                                        <select class="form-select" id="id_category" name="category" >
+                                            <option value="" >Select Category</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category.id }}" >{{ category.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
 
-                    </ul>
-                </nav>
+                                    <div class="col">
+                                        <select class="form-select" id="id_activity_name" name="name" >
+                                            <option value="">Select Activity</option>
+                                            {% for activity in activities_name %}
+                                                <option value="{{ activity.id }}">{{ activity.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col">
+                                        <input type="text" name="user" class="form-control" placeholder="Search by User">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" name="title" class="form-control" placeholder="Search by title">
+                                    </div>
+                                    
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">User</th>
+                                    <th class="text-center">Title</th>
+                                    <th class="text-center">Description</th>
+                                    <th class="text-center">Image</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                        
+                            <tbody>
+                                {% for activity in display %}
+                                <tr class="{% if activity.end_date < now %}table-secondary text-muted{% endif %}">
+                                    <td class="text-center">
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td class="text-center">{{activity.created_by.username}}</td>
+                                    <td class="text-center">{{ activity.title }}</td>
+                                    <td class="text-center" style="width: 30%;">{{ activity.description }}</td>
+                                    <td class="text-center">
+                                        <img src="{{ activity.image.url }}" alt="Activity Image" style="height: 150px; width: 250px; object-fit: cover;" class="img-thumbnail">
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center">
+                                            {% if activity.end_date < now %}
+                                            Expired
+                                            {% else %}
+                                                Ongoing
+                                            {% endif %}
+                                            -
+                                            {{activity.get_status_display }}
+                                        </div>
+                                        
+                                    </td>
+                                    
+                                    <td class="text-center">
+                                        {% if activity.end_date >= now %}
+                                        <div class="d-flex justify-content-center">
+                                            <form method="post" action="{% url 'activities:activity_status' activity.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-success mx-2" name="status" value="approved">
+                                                    Approve
+                                                </button>
+                                                <button type="submit" class="btn btn-danger" name="status" value="rejected">
+                                                    Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                        {% else %}
+                                        <span class="text-muted">No actions available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No activities found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <nav class="d-flex justify-content-between align-items-center mt-4">
+                        <p class="text-secondary mb-0"></p>
+                        <ul class="pagination mb-0">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    {% elif section == 'categories' %}
+    <div class="container py-4">
+        <div class="d-flex flex-column mt-4">
+            {% if request.user.is_staff %}
+            <a 
+                href="{% url 'activities:new_category_view' %}" 
+                class="btn btn-success mt-2 mt-md-0 align-self-start align-self-md-center w-100 w-md-auto">
+                Add Category +
+            </a>
+            {% endif %}
+        </div>
+        <div class="row mt-2 d-flex justify-content-start">
+            {% for category in display %}
+            <div class="col-md-4 mt-2">
+                <div class="card" style="width: 20rem;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center text-white">
+                           {{category.name}}
+                        </h5>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <h1>No categories found</h1>
+            {% endfor %}
+            <div class="d-flex justify-content-center mt-5">
+                <ul class="pagination">
+                    {% if display.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link text-decoration-underline text-dark" href="?section=categories&page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-dark" href="?section=categories&page={{ display.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ display.number }} of {{ display.paginator.num_pages }}</span>
+                    </li>
+                    {% if display.has_next %}
+                    <li class="page-item">
+                        <a class="page-link text-dark" href="?section=categories&page={{ display.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-decoration-underline text-dark" href="?section=categories&page={{ display.paginator.num_pages }}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </div>
-     {% endif %}
-        
     
+    {% elif section == 'activity_names' %}
+        <!-- Handle activity names section -->
+    {% endif %}
+
 </div>
 
 {% endblock %}
+
+{% block script %}
+<script>
+    // JavaScript to dynamically update activities based on selected category
+    document.getElementById("id_category").addEventListener("change", function() {
+        var categoryId = this.value;
+        if (categoryId) {
+            fetch(`/activities/get-activities/${categoryId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    var activitySelect = document.getElementById("id_activity_name");
+                    activitySelect.innerHTML = '<option value="">Select Activity</option>';
+                    data.activities.forEach(function(activity) {
+                        var option = document.createElement("option");
+                        option.value = activity.id;
+                        option.textContent = activity.name;
+                        activitySelect.appendChild(option);
+                    });
+                });
+        } else {
+            var activitySelect = document.getElementById("id_activity_name");
+            activitySelect.innerHTML = '<option value="">Select Activity</option>';
+        }
+    });
+    </script>
+{% endblock script %}
+    

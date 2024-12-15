@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 from django.core.paginator import Paginator
-from .forms import ActivityForm
+from .forms import ActivityForm , ActivityCategoryForm
 from .models import Activity, ActivityName, ActivityCategory
 
 def new_activity_view(request: HttpRequest):
@@ -17,18 +17,20 @@ def new_activity_view(request: HttpRequest):
     activity_names = ActivityName.objects.none()
 
     if request.method == "POST":
-        activity_form = ActivityForm(request.POST, request.FILES)
-        print(request.POST['name'])
-        if activity_form.is_valid():
-            activity:Activity = activity_form.save(commit=False)
-            activity.created_by = request.user
-            activity.save()
+        try:
+            activity_form = ActivityForm(request.POST, request.FILES)
+            if activity_form.is_valid():
+                activity:Activity = activity_form.save(commit=False)
+                activity.created_by = request.user
+                activity.save()
 
-            messages.success(request, "Created activity successfully! Waiting for approval.", "alert-success")
-            return redirect("main:home_page_view")
-        else:
-            print(activity_form.errors)
-            messages.error(request, "There was an error with your form. Please try again.", "alert-danger")
+                messages.success(request, "Created activity successfully! Waiting for approval.", "alert-success")
+                return redirect("main:home_page_view")
+            else:
+                print(activity_form.errors)
+                messages.error(request, "There was an error with your form. Please try again.", "alert-danger")
+        except Exception as e:
+            print(e)
 
     return render(request, "activities/new_activity.html", context={
         "form": activity_form,
@@ -42,14 +44,16 @@ def update_activity_view(request:HttpRequest, activity_id):
     categories = ActivityCategory.objects.all()
     activity_names = ActivityName.objects.none()
     if request.method == 'POST':
-        form = ActivityForm(request.POST,request.FILES, instance=activity)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Activity updated successfully!','danger')
-            return redirect('main:home_page_view')
-        else:
-            messages.error(request, 'There was an error updating the activity.')
-
+        try:
+            form = ActivityForm(request.POST,request.FILES, instance=activity)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Activity updated successfully!','danger')
+                return redirect('main:home_page_view')
+            else:
+                messages.error(request, 'There was an error updating the activity.')
+        except Exception as e:
+            print(e)
     else:
         form = ActivityForm(instance=activity)
 
@@ -93,3 +97,41 @@ def all_activities_view(request : HttpRequest):
     paginator = Paginator(activities,4)
     activities_page = paginator.get_page(page_number)
     return render(request,"activities/all_activities.html",context={"activities":activities_page,'categories':activities_category,'activities_name':activities_name})
+
+def activity_status(request:HttpRequest,activity_id:int):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid!", "alert-warning")
+        return redirect("main:home_page_view")
+    activity=Activity.objects.get(pk = activity_id)
+    
+    if request.method == 'POST':
+        try:
+            activity.status=request.POST['status']
+            activity.save()
+            return redirect('dashboards:admin_dashboard_view')
+        except Exception as e :
+            print(e)
+
+
+def new_category_view(request:HttpRequest):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid!", "alert-warning")
+        return redirect("main:home_page_view")
+    
+    activity_category_form = ActivityCategoryForm()  
+    if request.method == "POST":
+        try:
+            activity_category_form=ActivityCategoryForm(request.POST)
+            if activity_category_form.is_valid():
+                activity_category_form.save()
+                messages.success(request, "Created activity successfully! Waiting for approval.", "alert-success")
+                return redirect(request.GET.get('section','/'))
+            else:
+                print(activity_category_form.errors)
+                messages.error(request, "There was an error with your form. Please try again.", "alert-danger")
+        except Exception as e:
+            messages.error(request, "something went wrong", "alert-danger")
+
+    return render (request,"categories/new_category.html")
+
+    
