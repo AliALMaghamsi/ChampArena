@@ -22,7 +22,7 @@
     
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">ChampArena!</a>
+            <a class="navbar-brand" href="{% url 'main:home_page_view' %}">ChampArena</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -47,9 +47,19 @@
     </nav>
     
     <main>
-
+        {% if messages %}
+  
+        {% for message in messages %}
+        <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+  
+    {% endif %}
 
         {% block content %}
+
          
         {% endblock  %} 
     </main>

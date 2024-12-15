@@ -1,6 +1,6 @@
 from django.shortcuts import render , redirect
 from django.http import HttpRequest, HttpResponse
-from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant
+from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant,Booking
 from django.core.paginator import Paginator
 from django.contrib import messages
 # Create your views here.
@@ -22,7 +22,9 @@ def admin_dashboard_view(request:HttpRequest):
 
     
     return render(request,"dashboards/admin_dashboard.html",context={'display':display,'section':section})
-           
+
+
+
             
        
             

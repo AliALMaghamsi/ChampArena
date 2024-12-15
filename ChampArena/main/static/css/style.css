@@ -891,3 +891,259 @@ margin:10px;
         margin-top: 2rem;
     }
 }
+
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 56px;
+    background-color: var(--dark-bg);
+}
+
+/* Sidebar Styles */
+.dashboard-sidebar {
+    width: 280px;
+    background: var(--card-bg);
+    padding: 2rem;
+    position: fixed;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.sidebar-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-nav li.active a,
+.sidebar-nav li a:hover {
+    background: rgba(0, 255, 157, 0.1);
+    color: var(--accent-green);
+}
+
+/* Main Content */
+.dashboard-main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Stats Cards */
+.stats-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 255, 157, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.stats-icon i {
+    font-size: 1.5rem;
+    color: var(--accent-green);
+}
+
+.stats-info h3 {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.stats-info p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-section h2 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+}
+
+/* Table Styles */
+.table {
+    color: var(--text-secondary);
+}
+
+.table th {
+    color: var(--text-primary);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.table td {
+    vertical-align: middle;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Activity Cards */
+.activity-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.activity-header h3 {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.activity-details {
+    margin-bottom: 1rem;
+}
+
+.activity-details p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.activity-footer {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .dashboard-sidebar {
+        width: 80px;
+        padding: 1rem;
+    }
+
+    .dashboard-main {
+        margin-left: 80px;
+    }
+
+    .sidebar-header h4,
+    .sidebar-header p,
+    .sidebar-nav li a span {
+        display: none;
+    }
+
+    .sidebar-nav li a {
+        justify-content: center;
+        padding: 0.75rem;
+    }
+
+    .sidebar-nav li a i {
+        margin: 0;
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .dashboard-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 1rem;
+    }
+
+    .dashboard-main {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .sidebar-header {
+        display: none;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        margin: 0;
+        overflow-x: auto;
+    }
+
+    .sidebar-nav li {
+        margin: 0;
+    }
+
+    .sidebar-nav li a {
+        padding: 0.5rem 1rem;
+        white-space: nowrap;
+    }
+
+    .sidebar-nav li a i {
+        margin-right: 0.5rem;
+    }
+
+    .sidebar-nav li a span {
+        display: inline;
+    }
+}
