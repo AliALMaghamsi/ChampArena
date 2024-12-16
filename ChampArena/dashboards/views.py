@@ -62,8 +62,16 @@ def admin_dashboard_view(request:HttpRequest):
         display=None
 
     
-    return render(request,"dashboards/admin_dashboard.html",context={'display':display,'section':section})
+    return render(request,"dashboards/admin_dashboard.html",context={'display':display,'section':section,'categories':categories,'now':current_time})
            
             
        
-            
+
+def user_dashboard_view(request):
+ 
+    activities = Activity.objects.filter(created_by=request.user)  
+
+
+    bookings = Booking.objects.filter(activity__in=activities)
+
+    return render(request, 'dashboards/user_dashboard.html', {'activities': activities, 'bookings': bookings})

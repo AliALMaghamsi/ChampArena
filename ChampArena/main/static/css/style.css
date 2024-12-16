@@ -968,13 +968,13 @@ margin:10px;
 }
 
 .table th {
-    color: var(--text-primary);
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    color: black;
+    border-bottom-color: black;
 }
 
 .table td {
     vertical-align: middle;
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Activity Cards */

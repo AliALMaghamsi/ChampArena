@@ -6,5 +6,6 @@ app_name="dashboards"
 
 urlpatterns=[
     path('admin/',views.admin_dashboard_view,name='admin_dashboard_view'),
-   
+    path('user/',views.user_dashboard_view,name="user_dashboard_view")
+    
 ]

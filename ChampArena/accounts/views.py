@@ -22,7 +22,7 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             return redirect('accounts:profile')
-            return redirect('main:home_page_view')
+          
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
