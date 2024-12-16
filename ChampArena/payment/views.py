@@ -53,17 +53,13 @@ def process_payment_view(request: HttpRequest):
             payment.stripe_payment_id = intent.id
             payment.status = "Succeeded" if intent['status'] == 'succeeded' else "Failed"
             payment.save()
-            request.user.profile.wallet_balance +=Decimal(amount)
+            request.user.profile.wallet_balance+=Decimal(amount)
             request.user.profile.save()
             if intent['status'] == 'requires_action':
                 # Redirect to return_url for additional confirmation
                 return JsonResponse({'redirect_url': intent['next_action']['redirect_to_url']['url']})
             elif intent['status'] == 'succeeded':
                 # Update user's wallet balance after a successful payment
-                user_profile = request.user.profile
-                user_profile.wallet_balance += Decimal(amount)  # Convert the amount to Decimal
-                user_profile.save()
-
                 # Redirect to payment success page
                 return redirect("payment:payment_success")
             else:
