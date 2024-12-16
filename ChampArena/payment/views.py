@@ -5,6 +5,7 @@ from django.conf import settings
 from .models import Payment
 from django.http import JsonResponse
 import stripe
+from decimal import Decimal
 # Create your views here.
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -26,6 +27,7 @@ def process_payment_view(request:HttpRequest):
 
     if request.method == 'POST':
         try:
+            
             # Retrieve the amount and payment method ID from the form
             amount = float(request.POST.get('amount', 0))
             payment_method_id = request.POST.get('payment_method_id')
@@ -51,7 +53,8 @@ def process_payment_view(request:HttpRequest):
             payment.stripe_payment_id = intent.id
             payment.status = "Succeeded" if intent['status'] == 'succeeded' else "Failed"
             payment.save()
-
+            request.user.profile.wallet_balance +=Decimal(amount)
+            request.user.profile.save()
             if intent['status'] == 'requires_action':
                 # Redirect to return_url for additional confirmation
                 return JsonResponse({'redirect_url': intent['next_action']['redirect_to_url']['url']})
