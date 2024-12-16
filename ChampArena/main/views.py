@@ -36,6 +36,7 @@ def contact_page_view(request:HttpRequest):
                 first_name=request.user.first_name,  # Use the logged-in user's first name
                 last_name=request.user.last_name,    # Use the logged-in user's last name
                 topic=request.POST["topic"],
+                title=request.POST["title"],
                 email=request.user.email,            # Use the logged-in user's email
                 message=request.POST["message"]
             )
