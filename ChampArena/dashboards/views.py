@@ -1,6 +1,6 @@
 from django.shortcuts import render , redirect
 from django.http import HttpRequest, HttpResponse
-from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant
+from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant,Booking
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.utils.timezone import now
@@ -31,7 +31,6 @@ def admin_dashboard_view(request:HttpRequest):
         if status:
             activities = Activity.objects.filter(status=status)
 
-
         #Time filter
         date_filter = request.GET.get('date')
         if date_filter == 'today':
@@ -44,13 +43,20 @@ def admin_dashboard_view(request:HttpRequest):
         #user filter
         user = request.GET.get('user')
         if user:
-            activities = Activity.objects.filter(created_by__username__icontains=user)
+            activities = Activity.objects.filter(created_by__username__icontains=user).order_by('-start_date')
         
         #title filter
         title =request.GET.get('title')
         if title:
-            activities = Activity.objects.filter(title__contains=title)
+            activities = Activity.objects.filter(title__contains=title).order_by('-start_date')
 
+        category=request.GET.get('category')
+        if category:
+            activities = Activity.objects.filter(name__category__id=category).order_by('-start_date')
+
+        activity_name=request.GET.get('name')
+        if activity_name:
+            activities = Activity.objects.filter(name__id=activity_name).order_by('-start_date')
 
         page=request.GET.get('page')
         paginator=Paginator(activities,5)
@@ -66,4 +72,12 @@ def admin_dashboard_view(request:HttpRequest):
            
             
        
-            
+
+def user_dashboard_view(request):
+ 
+    activities = Activity.objects.filter(created_by=request.user)  
+
+
+    bookings = Booking.objects.filter(activity__in=activities)
+
+    return render(request, 'dashboards/user_dashboard.html', {'activities': activities, 'bookings': bookings})
