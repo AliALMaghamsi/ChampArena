@@ -1,6 +1,6 @@
 from django.shortcuts import render , redirect
 from django.http import HttpRequest, HttpResponse
-from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant
+from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant,Booking
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.utils.timezone import now
@@ -72,4 +72,12 @@ def admin_dashboard_view(request:HttpRequest):
            
             
        
-            
+
+def user_dashboard_view(request):
+ 
+    activities = Activity.objects.filter(created_by=request.user)  
+
+
+    bookings = Booking.objects.filter(activity__in=activities)
+
+    return render(request, 'dashboards/user_dashboard.html', {'activities': activities, 'bookings': bookings})

@@ -53,7 +53,25 @@ class ActivityParticipant(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    
 
     def __str__(self):
         return f"{self.participant.username} - {self.activity.name}"
+    
 
+
+class Booking(models.Model):
+    STATUS_CHOICES = [
+        ('Booked', 'Booked'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)  
+    amount = models.DecimalField(max_digits=10, decimal_places=2) 
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Booked') 
+    booking_date = models.DateTimeField(auto_now_add=True) 
+
+    def __str__(self):
+        return f"Booking for {self.activity.title} by {self.user.username}"
