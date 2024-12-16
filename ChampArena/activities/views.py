@@ -3,8 +3,9 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 from django.core.paginator import Paginator
-from .forms import ActivityForm
-from .models import Activity, ActivityName, ActivityCategory
+from .forms import ActivityForm, ReviewForm
+from .models import Activity, ActivityName, ActivityCategory, Review
+from django.utils import timezone
 
 def new_activity_view(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -66,12 +67,27 @@ def get_activities(request:HttpRequest, category_id):
     return JsonResponse({'activities': list(activities.values('id', 'name'))})
 
 
-def detail_activity_view(request:HttpRequest,activity_id):
+def detail_activity_view(request: HttpRequest, activity_id):
+    activity = Activity.objects.get(pk=activity_id)
+    current_date = timezone.now()
 
-    activities=Activity.objects.get(pk=activity_id)
-    
-    return render(request,"activities/activity_detail.html",{"activities":activities})
+    reviews = Review.objects.filter(activity=activity) if activity.end_date < current_date else []
 
+    if request.method == 'POST' and request.user.is_authenticated:
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.instance.activity = activity
+            form.instance.user = request.user
+            form.save()
+            return redirect('activities:detail_activity_view', activity_id=activity.id)
+    else:
+        form = ReviewForm()
+
+    return render(request, "activities/activity_detail.html", {
+        "activities": activity,
+        "reviews": reviews,
+        "form": form,
+    })
 
 def all_activities_view(request : HttpRequest):
     activities = Activity.objects.filter(status='approved').order_by('start_date')

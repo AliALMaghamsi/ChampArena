@@ -83,14 +83,55 @@
                         </div>
                     </div>
                 </div>
+         {% if user.is_authenticated %}
+    <div class="content-section" data-aos="fade-up">
+        <h2>Leave a Review</h2>
+        <form method="POST" class="review-form">
+            {% csrf_token %}
+            <div class="rating-dropdown">
+                <label for="rating">Rate this activity:</label>
+                {{ form.rating }}
+            </div>
+
+            <label class="review-title" for="review_text">Add comment:</label>
+            {{ form.review_text }}
+
+            <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
+        </form>
+    </div>
+{% else %}
+    <p class="login-prompt">Only users who have joined the activity can leave a review.</p>
+{% endif %}
+
+
+{% if reviews %}
+    <div class="content-section" data-aos="fade-up">
+        <h2>Reviews</h2>
+        {% for review in reviews %}
+            <div class="review-item">
+                <h5>{{ review.user.username }}</h5>
+                <p>Rating: {{ review.rating }} / 5</p>
+                <p>{{ review.review_text }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No reviews yet.</p>
+{% endif %}
+
+
+
             </div>
 
             <div class="col-lg-4">
                 
                     <div class="host-card">
                         <div class="host-info">
-                            <img src="{{accounts.user.profile.avatar.url}}" class="host-image">
-                            <div>
+                            {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
+                    {% else %}
+                        <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
+                    {% endif %}                            <div>
                                 <h4> Host</h4>
                                 <p>{{activities.created_by.username}}</p>
                               
@@ -102,6 +143,9 @@
                         class="btn btn-outline-primary w-100 mt-3">
                         Contact Host
                     </a>
+                        <a  class="btn btn-outline-secondary w-100 mt-3">
+        About Host
+    </a>
                     </div>
                 </div>
             </div>

@@ -43,7 +43,7 @@ class LoginForm(AuthenticationForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'wallet_balance', 'phone_number', 'location']
+        fields = ['profile_picture',  'phone_number', 'location']
         widgets = {
             'profile_picture': forms.ClearableFileInput(),
         }
