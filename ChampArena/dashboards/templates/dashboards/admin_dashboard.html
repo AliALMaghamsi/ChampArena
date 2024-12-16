@@ -149,7 +149,7 @@
                                     </td>
                                     <td class="text-center">{{activity.created_by.username}}</td>
                                     <td class="text-center">{{ activity.title }}</td>
-                                    <td class="text-center">{{activity.name}}-{{activity.name.category.name}}</td>
+                                    <td class="text-center">{{activity.name}}-{{activity.category.name}}</td>
                                     <td class="text-center" style="width: 30%;">{{ activity.description }}</td>
                                     <td class="text-center">
                                         <img src="{{ activity.image.url }}" alt="Activity Image" style="height: 150px; width: 250px; object-fit: cover;" class="img-thumbnail">
@@ -285,3 +285,4 @@
     });
     </script>
 {% endblock script %}
+    
