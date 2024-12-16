@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Message</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #121212; font-family: Arial, sans-serif; color: #ffffff;">
+    <div style="max-width: 600px; margin: 20px auto; background: #1e1e1e; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 20px;">
+        <!-- Greeting -->
+        <h1 style="color: #00ff9d; text-align: center; font-size: 24px; margin-bottom: 20px;">
+            👋 Hello ChampArena group from:{{ first_name }} {{ last_name }},
+        </h1>
+        
+        <!-- Thank You Section -->
+        <p style="font-size: 16px; line-height: 1.6; color: rgba(255, 255, 255, 0.87); text-align: center;">
+            Thank you for contacting us regarding  <strong style="color: #00ff9d;">"{{ topic }}:{{ title }}"</strong> 💬.
+        </p>
+        
+        <!-- User's Message -->
+        <p style="font-size: 16px; line-height: 1.6; text-align: center;">Here is a copy of your message 📩:</p>
+        <blockquote style="margin: 20px 0; padding-left: 15px; color: #cccccc; font-style: italic;">
+            <p style="font-size: 16px; line-height: 1.6; text-align: center;">"{{ message }}"</p>
+        </blockquote>
+        
+        <!-- Response Message -->
+        <p style="font-size: 16px; line-height: 1.6; text-align: center;">
+            🕒 We will get back to you as soon as possible.
+        </p>
+        
+        <!-- Best Regards -->
+        <div style="margin-top: 20px; text-align: center;">
+            <p style="font-size: 14px; color: #aaa;">Best regards,<br>
+                <span style="color: #00ff9d;">Your Team ✨</span>
+            </p>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="http://127.0.0.1:8000/" style="text-decoration: none;background-color: #00ff9d;color: white;font-size: 16px;padding: 10px 20px;border-radius: 5px;font-weight: bold;display: inline-block;margin-top: 10px;"> Go to Home 🏠</a>
+        </div>
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
+            🏆 ChampArena &copy; 2024. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
