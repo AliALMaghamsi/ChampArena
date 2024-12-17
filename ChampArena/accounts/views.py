@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm, LoginForm, ProfileEditForm
-from django.contrib.auth.models import User
-from .models import Profile
+
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -23,7 +22,7 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             return redirect('accounts:profile')
-            return redirect('main:home_page_view')
+          
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -31,12 +30,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('accounts:login')
-    return redirect('main:home_page_view')
+   
 
 @login_required
 def profile(request):
-
-    return render(request, 'accounts/profile.html')
+    user_profile = request.user.profile
+    print(f"Wallet balance: {user_profile.wallet_balance}")
+    return render(request, 'accounts/profile.html', {'wallet_balance': user_profile.wallet_balance})
 @login_required
 def edit_profile(request):
     user_profile = request.user.profile
@@ -48,16 +48,3 @@ def edit_profile(request):
     else:
         form = ProfileEditForm(instance=user_profile)
     return render(request, 'accounts/edit_profile.html', {'form': form})
-
-
-@login_required
-def host_profile(request, host_id):
-    host = get_object_or_404(User, pk=host_id)
-
-    profile = host.profile
-
-    return render(request, 'accounts/host_profile.html', {'host': host, 'profile': profile})
-
-
-
-

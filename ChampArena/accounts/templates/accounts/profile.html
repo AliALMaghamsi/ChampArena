@@ -10,7 +10,7 @@
             <h2>{{ user.username }}</h2>
 
             <div class="profile-details">
-                <p><strong>Profile Picture:</strong>
+                <p><strong></strong>
                     {% if user.profile.profile_picture %}
                         <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
                     {% else %}
@@ -18,7 +18,7 @@
                     {% endif %}
                 </p>
 
-                <p><strong>Wallet Balance:</strong> ${{ user.profile.wallet_balance }}</p>
+                <p><strong>Wallet Balance:</strong> ${{user.profile.wallet_balance}}</p>
 
                 <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
                 <p><strong>Location:</strong> {{ user.profile.location }}</p>

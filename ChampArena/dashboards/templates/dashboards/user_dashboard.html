@@ -1,0 +1,143 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="dashboard-container">
+    
+    <div class="dashboard-sidebar">
+        <div class="sidebar-header">
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile" class="rounded-circle mb-3">
+            <h4>{{ user.profile.user.first_name }}</h4>
+            <p class="text-muted">@{{ user.profile.user.username }}</p>
+        </div>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="{% url 'accounts:profile' %}"><i class="bi bi-person-fill me-2"></i>Profile</a>
+            </li>
+            <li>
+                <a href="#activities"><i class="bi bi-calendar-event me-2"></i>My Activities</a>
+            </li>
+          
+          
+            <li>
+                <a href="#requests"><i class="bi bi-envelope me-2"></i>Requests
+                    <span class="badge bg-primary ms-2">{{user.activities.count}}</span>
+                </a>
+            </li>
+
+         
+        </ul>
+    </div>
+
+    <div class="dashboard-main">
+       
+        <div class="dashboard-header">
+            <h1>Dashboard</h1>
+            <a href="{% url 'activities:new_activity_view' %}"> <button class="btn btn-primary">
+               <i class="bi bi-plus-lg me-2"></i>Create Activity
+            </button></a>
+        </div>
+
+
+
+        
+        <div class="dashboard-section">
+            <h2>Pending Requests</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Game</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in bookings %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                
+                                   <a href="{% url 'accounts:profile' %}"> {{ request.user.username }}</a>
+                                </div>
+                            </td>
+                            <td>{{ request.activity.name.name }}</td>
+                            <td>{{ request.activity.start_date|date:"M d, Y" }}</td>
+                            <td>{{ request.activity.start_date|time:"H:i" }}</td>
+                            <td><span class="badge bg-warning">{{ request.status }}</span></td>
+                            <td>
+                                <form method="post" action="{% url 'dashboards:user_dashboard_view' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="booking_id" value="{{ request.id }}">
+                                    <input type="hidden" name="action" value="accept">
+                                    <button class="btn btn-success btn-sm me-1 g-4">Accept</button>
+                                </form>
+                                <form method="post" action="{% url 'dashboards:user_dashboard_view' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="booking_id" value="{{ request.id }}">
+                                    <input type="hidden" name="action" value="reject">
+                                    <button class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">No pending requests.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h2>My Activities</h2>
+            <div class="row g-4">
+                {% for activity in activities %}
+                <div class="col-md-6">
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <h3>{{ activity.name }}</h3>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="activity-details">
+                            <p><i class="bi bi-calendar3 me-2"></i>{{ activity.start_date|date }}</p>
+                            <p><i class="bi bi-clock me-2"></i>{{ activity.start_date|time }}</p>
+                            <p><i class="bi bi-people me-2"></i>{{ activity.person_limit }} Players</p>
+                            <p><i class="bi bi-geo-alt me-2"></i>{{ activity.location }}</p>
+                        </div>
+                        <div class="activity-footer">
+                            <a href="{% url 'activities:detail_activity_view' activity.id %}"><button class="btn btn-outline-primary btn-sm">View Details</button></a>
+                            <button class="btn btn-outline-danger btn-sm">Cancel</button>
+
+                           
+                            {% if activity.bookings %}
+                                <h5>Requests to Join:</h5>
+                                <ul>
+                                    {% for booking in activity.bookings %}
+                                        <li>
+                                            {{ booking.user.username }}
+                                            <button class="btn btn-success btn-sm">Accept</button>
+                                            <button class="btn btn-danger btn-sm">Reject</button>
+                                        </li>
+                                    {% empty %}
+                                        <li>No requests yet.</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                    <p>No activities created yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

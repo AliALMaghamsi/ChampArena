@@ -22,7 +22,7 @@
     
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">ChampArena!</a>
+            <a class="navbar-brand" href="{% url 'main:home_page_view' %}">ChampArena</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -35,31 +35,59 @@
                     <li class="nav-item"><a class="nav-link" href="#about">about</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                     {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {% if user.profile.profile_picture %}
-                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="30" class="rounded-circle">
-                            {% else %}
-                                <img src="{% static 'default-avatar.png' %}" alt="Default Avatar" width="30" class="rounded-circle">
-                            {% endif %}
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
-                        </ul>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li> <!-- Profile Link -->
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboards:user_dashboard_view' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
-                    {% endif %}
+                        <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
+                    {% endif %}      
+
+                    <div id="notifications" class="dropdown">
+                        <button class="btn nav-link dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell position-relative">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ unread_notifications_count }}
+                                </span>
+                            </i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if user.notifications.count %}
+                                {% for notification in user.notifications.all %}
+                                    <li class="dropdown-item {% if not notification.is_read %}bg-light{% endif %}">
+                                        <small>{{ notification.message }}</small>
+                                        <small class="text-muted d-block">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                                        
+                                        {% if notification.is_read %}
+                                            <a href="{% url 'dashboards:delete_notification_view' notification.id %}?next={{ request.path }}" class="text-danger">Delete</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="dropdown-item text-muted">No notifications</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                            
                 </ul>
             </div>
         </div>
     </nav>
     
     <main>
-
+        {% if messages %}
+  
+        {% for message in messages %}
+        <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+  
+    {% endif %}
 
         {% block content %}
+
          
         {% endblock  %} 
     </main>
