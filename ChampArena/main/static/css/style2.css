@@ -272,9 +272,7 @@
     text-transform: uppercase;
     transition: background-color 0.3s ease, transform 0.3s ease;
     text-align: center;
-    width: auto;
-    flex: 1;
-    max-width: 200px;
+
 }
 
 .profile-actions .logout {
@@ -479,4 +477,86 @@
     width: 30px;
     height: 30px;
     margin-right: 0.5rem;
+}
+
+
+
+
+
+
+
+.review-form {
+    background-color: var(--dark-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-form label {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.rating-dropdown,
+.review-title {
+    margin-bottom: 1.5rem;
+}
+
+.review-form .rating-dropdown select,
+.review-form textarea {
+    width: 50%;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--accent-green);
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.review-form .btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.review-form .btn-primary:hover {
+    background-color: var(--accent-blue);
+}
+
+.login-prompt {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.review-item {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-item h5 {
+    color: var(--accent-green);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.review-item p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
 }

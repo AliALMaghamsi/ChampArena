@@ -87,3 +87,15 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message
+
+
+
+class Review(models.Model):
+    activity = models.ForeignKey(Activity, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    review_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.activity.name}"

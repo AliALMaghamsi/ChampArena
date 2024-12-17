@@ -34,13 +34,26 @@
                     
                     <li class="nav-item"><a class="nav-link" href="#about">about</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li> <!-- Profile Link -->
-                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboards:user_dashboard_view' %}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
-                    {% endif %}      
+                  {% if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" alt="User Profile Picture" class="rounded-circle" width="40" height="40">
+            {% else %}
+                <img src="/static/default-avatar.png" alt="Default Avatar" class="rounded-circle" width="40" height="40">
+            {% endif %}
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'dashboards:user_dashboard_view' %}">Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+        </ul>
+    </li>
+{% else %}
+    <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
+{% endif %}
+
 
                     <div id="notifications" class="dropdown">
                         <button class="btn nav-link dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">

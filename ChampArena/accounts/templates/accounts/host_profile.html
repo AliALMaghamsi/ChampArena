@@ -3,29 +3,40 @@
 {% block title %}Host Profile{% endblock %}
 
 {% block content %}
-<div class="host-profile-page">
-    <div class="container">
-        <h1>{{ host.username }}'s Profile</h1>
+    <div class="profile-page">
+        <div class="profile-container">
+            <h2>{{ host.username }}'s Profile</h2>
 
-        <div class="host-profile-info">
-            <p><strong>Username:</strong> {{ host.username }}</p>
+            <div class="profile-details">
+                <p>
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" width="100">
+                    {% else %}
+                        <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
+                    {% endif %}
+                </p>
 
-            {% if profile.profile_picture %}
-                <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" width="100"></p>
-            {% else %}
-                <p><strong>Profile Picture:</strong> <img src="/static/default-avatar.png" alt="Default Avatar" width="100"></p>
-            {% endif %}
+                <p><strong>Email:</strong> {{ host.email }}</p>
+                <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+                <p><strong>Location:</strong> {{ profile.location }}</p>
 
-            <p><strong>Email:</strong> {{ host.email }}</p>
-            <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
-            <p><strong>Location:</strong> {{ profile.location }}</p>
-        </div>
+                <p><strong>Recent Activity:</strong></p>
+                <ul>
+                    {% if activities %}
+                        {% for activity in activities %}
+                            <li>{{ activity.title }} - {{ activity.name.name }} </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No recent activities found.</li>
+                    {% endif %}
+                </ul>
+            </div>
 
-        <div class="host-profile-actions">
-            <a href="https://wa.me/{{ host.profile.phone_number }}?text=Hi, I am interested in your activity {{ activities.title }}." target="_blank" class="btn btn-outline-primary w-100 mt-3">
-                Contact Host via WhatsApp
-            </a>
+            <div class="profile-actions">
+                <a href="https://wa.me/{{ profile.phone_number }}?text=Hi, I am interested in your activity." target="_blank" class="btn btn-outline-primary w-100 mt-3">
+                    Contact Host via WhatsApp
+                </a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
