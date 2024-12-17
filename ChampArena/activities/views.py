@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 from django.core.paginator import Paginator
 
-from .forms import ActivityForm,ActivityCategoryForm,ActivityNameForm
-from .models import Activity, ActivityName, ActivityCategory,Booking,Notification
+from .forms import ActivityForm,ActivityCategoryForm,ActivityNameForm,ReviewForm
+from .models import Activity, ActivityName, ActivityCategory,Booking,Notification,Review
+from django.utils import timezone
 
 
 def new_activity_view(request: HttpRequest):
@@ -75,13 +76,33 @@ def get_activities(request:HttpRequest, category_id):
     return JsonResponse({'activities': list(activities.values('id', 'name'))})
 
 
-def detail_activity_view(request:HttpRequest,activity_id):
+def detail_activity_view(request, activity_id):
+    activity = get_object_or_404(Activity, pk=activity_id)
+    current_date = timezone.now()
+    reviews = Review.objects.filter(activity=activity) if activity.end_date < current_date else []
 
-    activities=Activity.objects.get(pk=activity_id)
-    
-    return render(request,"activities/activity_detail.html",{"activities":activities})
+    has_booked = Booking.objects.filter(user=request.user, activity=activity, status__in=['Booked', 'Completed']).exists()
 
+    if request.method == 'POST' and request.user.is_authenticated:
+        if has_booked:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                form.instance.activity = activity
+                form.instance.user = request.user
+                form.save()
+                return redirect('activities:detail_activity_view', activity_id=activity.id)
+        else:
+            return redirect('activities:detail_activity_view', activity_id=activity.id)
 
+    else:
+        form = ReviewForm()
+
+    return render(request, "activities/activity_detail.html", {
+        "activities": activity,
+        "reviews": reviews,
+        "form": form,
+        "has_booked": has_booked
+    })
 def all_activities_view(request : HttpRequest):
     activities = Activity.objects.filter(status='approved').order_by('start_date')
     activities_category=ActivityCategory.objects.all()

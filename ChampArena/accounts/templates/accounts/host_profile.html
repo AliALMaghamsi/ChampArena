@@ -1,32 +1,30 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Your Profile{% endblock %}
-{% load static %}
+{% block title %}Host Profile{% endblock %}
 
 {% block content %}
     <div class="profile-page">
         <div class="profile-container">
-            <h2>{{ user.username }}</h2>
+            <h2>{{ host.username }}'s Profile</h2>
 
             <div class="profile-details">
                 <p>
-                    {% if user.profile.profile_picture %}
-                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" width="100">
                     {% else %}
                         <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
                     {% endif %}
                 </p>
 
-                <p><strong>Wallet Balance:</strong> ${{ wallet_balance }}</p>
-
-                <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
-                <p><strong>Location:</strong> {{ user.profile.location }}</p>
+                <p><strong>Email:</strong> {{ host.email }}</p>
+                <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+                <p><strong>Location:</strong> {{ profile.location }}</p>
 
                 <p><strong>Recent Activity:</strong></p>
                 <ul>
                     {% if activities %}
                         {% for activity in activities %}
-                            <li>{{ activity.name }} (Created on: {{ activity.created_at }})</li>
+                            <li>{{ activity.title }} - {{ activity.name.name }} </li>
                         {% endfor %}
                     {% else %}
                         <li>No recent activities found.</li>
@@ -35,9 +33,9 @@
             </div>
 
             <div class="profile-actions">
-                <a href="{% url 'accounts:edit_profile' %}">Edit</a>
-                <a href="{% url 'payment:card_payment_view' %}">Payment</a>
-                <a href="{% url 'accounts:logout' %}" class="logout">Logout</a>
+                <a href="https://wa.me/{{ profile.phone_number }}?text=Hi, I am interested in your activity." target="_blank" class="btn btn-outline-primary w-100 mt-3">
+                    Contact Host via WhatsApp
+                </a>
             </div>
         </div>
     </div>
