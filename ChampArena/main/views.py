@@ -77,3 +77,6 @@ def contact_page_view(request:HttpRequest):
          
 
     return render(request, 'main/contact.html')
+
+
+

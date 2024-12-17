@@ -36,11 +36,39 @@
                     <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li> <!-- Profile Link -->
-
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboards:user_dashboard_view' %}">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a></li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
-                    {% endif %}                
+                    {% endif %}      
+
+                    <div id="notifications" class="dropdown">
+                        <button class="btn nav-link dropdown-toggle position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell position-relative">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ unread_notifications_count }}
+                                </span>
+                            </i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if user.notifications.count %}
+                                {% for notification in user.notifications.all %}
+                                    <li class="dropdown-item {% if not notification.is_read %}bg-light{% endif %}">
+                                        <small>{{ notification.message }}</small>
+                                        <small class="text-muted d-block">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                                        
+                                        {% if notification.is_read %}
+                                            <a href="{% url 'dashboards:delete_notification_view' notification.id %}?next={{ request.path }}" class="text-danger">Delete</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="dropdown-item text-muted">No notifications</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                            
                 </ul>
             </div>
         </div>

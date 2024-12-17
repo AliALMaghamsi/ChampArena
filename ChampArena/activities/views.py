@@ -3,8 +3,10 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 from django.core.paginator import Paginator
+
 from .forms import ActivityForm,ActivityCategoryForm,ActivityNameForm
-from .models import Activity, ActivityName, ActivityCategory,Booking
+from .models import Activity, ActivityName, ActivityCategory,Booking,Notification
+
 
 def new_activity_view(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -239,6 +241,6 @@ def activity_status(request:HttpRequest,activity_id:int):
         try:
             activity.status=request.POST['status']
             activity.save()
-            return redirect('dashboards:admin_dashboard_view')
+            return redirect('dashboards:admin_dashboard_view',{'unread_notifications_count':unread_notifications_count})
         except Exception as e :
             print(e)

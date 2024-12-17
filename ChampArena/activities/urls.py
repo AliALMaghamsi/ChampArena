@@ -18,4 +18,5 @@ urlpatterns=[
   path('activity_name/update/<int:activity_id>/',views.update_activity_name_view,name='update_activity_name_view'),
   path('activity_name/delete/<int:activity_id>/',views.delete_activity_name_view,name='delete_activity_name_view'),
   path('status/<activity_id>/',views.activity_status,name='activity_status'),
+  
 ]

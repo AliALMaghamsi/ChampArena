@@ -12,10 +12,14 @@
             <p class="text-muted">@{{ user.profile.user.username }}</p>
         </div>
         <ul class="sidebar-nav">
-        
+            <li>
+                <a href="{% url 'accounts:profile' %}"><i class="bi bi-person-fill me-2"></i>Profile</a>
+            </li>
             <li>
                 <a href="#activities"><i class="bi bi-calendar-event me-2"></i>My Activities</a>
             </li>
+          
+          
             <li>
                 <a href="#requests"><i class="bi bi-envelope me-2"></i>Requests
                     <span class="badge bg-primary ms-2">{{user.activities.count}}</span>
@@ -30,9 +34,9 @@
        
         <div class="dashboard-header">
             <h1>Dashboard</h1>
-            <button class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>Create Activity
-            </button>
+            <a href="{% url 'activities:new_activity_view' %}"> <button class="btn btn-primary">
+               <i class="bi bi-plus-lg me-2"></i>Create Activity
+            </button></a>
         </div>
 
 
@@ -58,7 +62,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                 
-                                    {{ request.user.username }}
+                                   <a href="{% url 'accounts:profile' %}"> {{ request.user.username }}</a>
                                 </div>
                             </td>
                             <td>{{ request.activity.name.name }}</td>
@@ -66,13 +70,17 @@
                             <td>{{ request.activity.start_date|time:"H:i" }}</td>
                             <td><span class="badge bg-warning">{{ request.status }}</span></td>
                             <td>
-                                <form method="post" action="#">
+                                <form method="post" action="{% url 'dashboards:user_dashboard_view' %}" style="display:inline;">
                                     {% csrf_token %}
+                                    <input type="hidden" name="booking_id" value="{{ request.id }}">
+                                    <input type="hidden" name="action" value="accept">
                                     <button class="btn btn-success btn-sm me-1 g-4">Accept</button>
                                 </form>
-                                <form method="post" action="#">
+                                <form method="post" action="{% url 'dashboards:user_dashboard_view' %}" style="display:inline;">
                                     {% csrf_token %}
-                                    <button class="btn btn-danger btn-sm ">Reject</button>
+                                    <input type="hidden" name="booking_id" value="{{ request.id }}">
+                                    <input type="hidden" name="action" value="reject">
+                                    <button class="btn btn-danger btn-sm">Reject</button>
                                 </form>
                             </td>
                         </tr>
