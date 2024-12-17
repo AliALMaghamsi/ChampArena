@@ -34,12 +34,7 @@
                         <button type="submit" class="btn btn-link nav-link text-light text-start">Activity Name</button>
                     </form>
                 </li>
-                <li class="nav-item mt-4">
-                    <form method="get">
-                        <input type="hidden" name="section" value="messages">
-                        <button type="submit" class="btn btn-link nav-link text-light text-start">Contact</button>
-                    </form>
-                </li>
+               
             </ul>
         </div>
     </div>
@@ -85,35 +80,36 @@
                                 </select>
                             </div>
                             
-                            <div class="d-flex flex-column">
-                                <h6>Category:</h6>
-                                <select class="form-select" id="id_category" name="category" >
+                            <div class="col-12 col-md">
+                                <select class="form-select  " id="id_category" name="category" >
                                     <option value="" >Select Category</option>
                                     {% for category in categories %}
-                                        <option value="{{ category.id }}" >{{ category.name }}</option>
+                                        <option value="{{ category.id }}"{% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
-    
-                            <div class="d-flex flex-column">
-                                <h6>Activity Type</h6>
-                                <select class="form-select" id="id_activity_name" name="name" >
+            
+                            <div class="col-12 col-md">
+                                <select class="form-control  " id="id_activity_name" name="name" >
                                     <option value="">Select Activity</option>
                                     {% for activity in activities_name %}
-                                        <option value="{{ activity.id }}">{{ activity.name }}</option>
+                                        <option value="{{ activity.id }}" {% if request.GET.category == activity.id|stringformat:"s" %}selected{% endif %}>{{ activity.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
     
                             <div class="">
-                                <input type="text" name="user" class="form-control" placeholder="Search by User">
+                                <input type="text" name="user" class="form-control" placeholder="Search by User" value="{{request.GET.user}}">
                             </div>
                             <div class="">
-                                <input type="text" name="title" class="form-control" placeholder="Search by title">
+                                <input type="text" name="title" class="form-control" placeholder="Search by title" value="{{request.GET.title}}">
                             </div>
                             
-                            <div class="">
+                            <div class="d-flex gap-1">
                                 <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                                <a href="{{ request.path }}" class="btn btn-secondary w-50">Reset Filters</a>
                             </div>
                         
                         
@@ -149,8 +145,8 @@
                                     </td>
                                     <td class="text-center">{{activity.created_by.username}}</td>
                                     <td class="text-center">{{ activity.title }}</td>
-                                    <td class="text-center">{{activity.name}}-{{activity.category.name}}</td>
-                                    <td class="text-center" style="width: 30%;">{{ activity.description }}</td>
+                                    <td class="text-center">{{activity.name}}-{{activity.name.category.name}}</td>
+                                    <td class="text-center" style="width: 35%;">{{ activity.description }}</td>
                                     <td class="text-center">
                                         <img src="{{ activity.image.url }}" alt="Activity Image" style="height: 150px; width: 250px; object-fit: cover;" class="img-thumbnail">
                                     </td>
@@ -169,7 +165,7 @@
                                     
                                     <td class="text-center">
                                         {% if activity.end_date >= now %}
-                                        <div class="d-flex justify-content-center">
+                                        <div class="d-flex justify-content-center ">
                                             <form method="post" action="{% url 'activities:activity_status' activity.id %}">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-success mx-2" name="status" value="approved">
@@ -187,7 +183,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="7" class="text-center">No activities found</td>
+                                    <td colspan="8" class="text-center">No activities found</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -201,60 +197,306 @@
                 </div>
             </div>
         </div>
-    {% elif section == 'categories' %}
-    <div class="container py-4">
-        <div class="d-flex flex-column mt-4">
-            {% if request.user.is_staff %}
-            <a 
-                href="{% url 'activities:new_category_view'%}?section={{request.path}}?section=categories" 
-                class="btn btn-success mt-2 mt-md-0 align-self-start align-self-md-center w-100 w-md-auto">
-                Add Category +
-            </a>
-            {% endif %}
-        </div>
-        <div class="row mt-2 d-flex justify-content-start">
-            {% for category in display %}
-            <div class="col-md-4 mt-2">
-                <div class="card" style="width: 20rem;">
-                    <div class="card-body">
-                        <h5 class="card-title text-center text-white">
-                           {{category.name}}
-                        </h5>
+        {% elif section == 'categories' %}
+        <div class="container py-4">
+            <div class="d-flex flex-column mt-4">
+                
+                <a 
+                    href="" 
+                    class="btn btn-success mt-2 mt-md-0 align-self-start align-self-md-center w-100 w-md-auto" 
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Add Category +
+                </a>
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title text-black fs-5" id="staticBackdropLabel">Add Category</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" action="{% url 'activities:new_category_view' %}?section={{request.path}}?section=categories" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-6 col-sm-12 mb-3">
+                                            <div class="form-group">
+                                                <label for="id_name" class="form-label text-dark">Name</label>
+                                                <input type="text" name="name" id="id_name" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-primary">Create Category</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
             </div>
-            {% empty %}
-            <h1>No categories found</h1>
-            {% endfor %}
+    
+            <div class="row mt-2 d-flex justify-content-start mt-3">
+                {% for category in display %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+
+                        <div class="custom-card-container">
+                            <div class="custom-card card">
+                                <div class="custom-card-body">
+                                    <h5 class="custom-card-title">{{ category.name }}</h5>
+                                    <div class="category-buttons d-flex gap-1">
+                                        <button class="btn-update" data-bs-toggle="modal" data-bs-target="#updateCategoryModal{{ category.id }}">Update</button>
+                                        <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal{{ category.id }}">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Update Modal -->
+                    <div class="modal fade" id="updateCategoryModal{{ category.id }}" tabindex="-1" aria-labelledby="updateCategoryLabel{{ category.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark" id="updateCategoryLabel{{ category.id }}">Update Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="post" action="{% url 'activities:update_category_view' category.id %}?section={{request.path}}?section=categories">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <label for="updateCategoryName{{ category.id }}" class="form-label text-dark">Category Name</label>
+                                        <input type="text" class="form-control" name="name" id="updateCategoryName{{ category.id }}" value="{{ category.name }}" required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Delete Confirmation Modal -->
+                    <div class="modal fade" id="deleteCategoryModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteCategoryLabel{{ category.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark" id="deleteCategoryLabel{{ category.id }}">Delete Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-dark">
+                                    Are you sure you want to delete the category "<strong>{{ category.name }}</strong>"?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form method="post" action="{% url 'activities:delete_category_view' category.id %}?section={{request.path}}?section=categories">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h1 class="text-center">No categories found</h1>
+                {% endfor %}
+            </div>
+    
             <div class="d-flex justify-content-center mt-5">
                 <ul class="pagination">
                     {% if display.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link text-decoration-underline text-dark" href="?section=categories&page=1">First</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link text-dark" href="?section=categories&page={{ display.previous_page_number }}">Previous</a>
-                    </li>
+                        <li class="page-item">
+                            <a class="page-link text-decoration-underline text-dark" href="?section=categories&page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="?section=categories&page={{ display.previous_page_number }}">Previous</a>
+                        </li>
                     {% endif %}
                     <li class="page-item disabled">
                         <span class="page-link">Page {{ display.number }} of {{ display.paginator.num_pages }}</span>
                     </li>
                     {% if display.has_next %}
-                    <li class="page-item">
-                        <a class="page-link text-dark" href="?section=categories&page={{ display.next_page_number }}">Next</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link text-decoration-underline text-dark" href="?section=categories&page={{ display.paginator.num_pages }}">Last</a>
-                    </li>
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="?section=categories&page={{ display.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link text-decoration-underline text-dark" href="?section=categories&page={{ display.paginator.num_pages }}">Last</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </div>
     
+    
     {% elif section == 'activity_names' %}
-        <h1>asldkjlaskjdlakjsdlka</h1>
+<div class="container py-4">
+   
+
+    <!-- Activity Names Section -->
+    <div class="d-flex flex-column mt-4">
+       
+        <a 
+            href="" 
+            class="btn btn-success mt-2 mt-md-0 align-self-start align-self-md-center w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#addActivityModal">
+            Add Activity Name +
+        </a>
+        <div class="modal fade" id="addActivityModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title text-black fs-5" id="staticBackdropLabel">Add Activity Name</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'activities:new_activity_name_view' %}?section={{request.path}}?section=activity_names" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <!-- Activity Name -->
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 col-sm-12 mb-3">
+                                    <div class="form-group">
+                                        <label for="id_name" class="form-label text-dark">Name</label>
+                                        <input type="text" name="name" id="id_name" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Category Selection -->
+                            <div class="row justify-content-center">
+                                <div class="col-md-6 col-sm-12 mb-3">
+                                    <div class="form-group">
+                                        <label for="id_category" class="form-label text-dark">Category</label>
+                                        <select name="category" id="id_category" class="form-select" required>
+                                            {% for category in categories %}
+                                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary">Create Activity Name</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Display Activity Names -->
+    <div class="row  d-flex justify-content-start mt-3">
+        {% for activity in display %}
+            <div class="col-12 col-sm-6 col-md-3 col-lg-3 my-2">
+                <div class="custom-card-container">
+                    <div class="custom-card card">
+                        <div class="custom-card-body">
+                            <h5 class="custom-card-title">{{ activity.name }}</h5>
+                            <p class="custom-card-title">Category: {{ activity.category.name }}</p>
+
+                            <!-- Buttons -->
+                            <div class="category-buttons d-flex gap-1">
+                                <button class="btn-update" data-bs-toggle="modal" data-bs-target="#updateActivityModal{{ activity.id }}">
+                                    Update
+                                </button>
+
+                                <button class="btn-delete" data-bs-toggle="modal" data-bs-target="#deleteActivityModal{{ activity.id }}">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Modal -->
+            <div class="modal fade" id="updateActivityModal{{ activity.id }}" tabindex="-1" aria-labelledby="updateActivityLabel{{ activity.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="updateActivityLabel{{ activity.id }}">Update Activity Name</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="post" action="{% url 'activities:update_activity_name_view' activity.id %}?section={{request.path}}?section=activity_names">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <label for="updateActivityName{{ activity.id }}" class="form-label text-dark">Activity Name</label>
+                                <input type="text" class="form-control" name="name" id="updateActivityName{{ activity.id }}" value="{{ activity.name }}" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteActivityModal{{ activity.id }}" tabindex="-1" aria-labelledby="deleteActivityLabel{{ activity.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="deleteActivityLabel{{ activity.id }}">Delete Activity Name</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-dark">
+                            Are you sure you want to delete the activity "<strong>{{ activity.name }}</strong>"?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form method="post" action="{% url 'activities:delete_activity_name_view' activity.id %}?section={{request.path}}?section=activity_names">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% empty %}
+            <h1>No activity names found</h1>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-5">
+        <ul class="pagination">
+            {% if display.has_previous %}
+                <li class="page-item">
+                    <a class="page-link text-decoration-underline text-dark" href="?section=activity_names&page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?section=activity_names&page={{ display.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ display.number }} of {{ display.paginator.num_pages }}</span>
+            </li>
+            {% if display.has_next %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?section=activity_names&page={{ display.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-decoration-underline text-dark" href="?section=activity_names&page={{ display.paginator.num_pages }}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    </div>
     {% endif %}
+
+    
 
 </div>
 
@@ -262,27 +504,60 @@
 
 {% block script %}
 <script>
-    // JavaScript to dynamically update activities based on selected category
-    document.getElementById("id_category").addEventListener("change", function() {
-        var categoryId = this.value;
-        if (categoryId) {
-            fetch(`/activities/get-activities/${categoryId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    var activitySelect = document.getElementById("id_activity_name");
-                    activitySelect.innerHTML = '<option value="">Select Activity</option>';
-                    data.activities.forEach(function(activity) {
-                        var option = document.createElement("option");
-                        option.value = activity.id;
-                        option.textContent = activity.name;
-                        activitySelect.appendChild(option);
+    document.addEventListener("DOMContentLoaded", function() {
+        const categorySelect = document.getElementById("id_category");
+        const activitySelect = document.getElementById("id_activity_name");
+
+        // Function to fetch activities based on category ID
+        function updateActivityDropdown(categoryId, selectedActivity = null) {
+            if (categoryId) {
+                fetch(`/activities/get-activities/${categoryId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        activitySelect.innerHTML = '<option value="">Select Activity</option>';
+
+                        data.activities.forEach(function(activity) {
+                            const option = document.createElement("option");
+                            option.value = activity.id;
+                            option.textContent = activity.name;
+
+                            // Retain the previously selected activity
+                            if (activity.id == selectedActivity) {
+                                option.selected = true;
+                            }
+
+                            activitySelect.appendChild(option);
+                        });
                     });
-                });
-        } else {
-            var activitySelect = document.getElementById("id_activity_name");
-            activitySelect.innerHTML = '<option value="">Select Activity</option>';
+            } else {
+                activitySelect.innerHTML = '<option value="">Select Activity</option>';
+            }
         }
+
+        // On page load: Check if category is selected and pre-populate activities
+        const selectedCategory = "{{ request.GET.category|default:'' }}";
+        const selectedActivity = "{{ request.GET.name|default:'' }}";
+
+        if (selectedCategory) {
+            updateActivityDropdown(selectedCategory, selectedActivity);
+        }
+
+        // Event listener for category dropdown change
+        categorySelect.addEventListener("change", function() {
+            updateActivityDropdown(this.value);
+        });
     });
-    </script>
+</script>
+<script>
+    // Show buttons when hovering over the card
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.querySelector('.hover-buttons').style.display = 'flex';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.querySelector('.hover-buttons').style.display = 'none';
+        });
+    });
+</script>
 {% endblock script %}
     

@@ -22,10 +22,12 @@
                 </div>
                 
                 <div class="col-12 col-md">
-                    <select class="form-control bg-dark text-white" id="id_category" name="category" >
+                    <select class="form-select bg-dark text-white" id="id_category" name="category" >
                         <option value="" >Select Category</option>
                         {% for category in categories %}
-                            <option value="{{ category.id }}" >{{ category.name }}</option>
+                            <option value="{{ category.id }}"{% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>
@@ -35,7 +37,7 @@
                     <select class="form-control bg-dark text-white" id="id_activity_name" name="name" >
                         <option value="">Select Activity</option>
                         {% for activity in activities_name %}
-                            <option value="{{ activity.id }}">{{ activity.name }}</option>
+                            <option value="{{ activity.id }}" {% if request.GET.category == activity.id|stringformat:"s" %}selected{% endif %}>{{ activity.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -139,27 +141,50 @@
 
 {% block script %}
 <script>
-    // JavaScript to dynamically update activities based on selected category
-    document.getElementById("id_category").addEventListener("change", function() {
-        var categoryId = this.value;
-        if (categoryId) {
-            fetch(`/activities/get-activities/${categoryId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    var activitySelect = document.getElementById("id_activity_name");
-                    activitySelect.innerHTML = '<option value="">Select Activity</option>';
-                    data.activities.forEach(function(activity) {
-                        var option = document.createElement("option");
-                        option.value = activity.id;
-                        option.textContent = activity.name;
-                        activitySelect.appendChild(option);
+    document.addEventListener("DOMContentLoaded", function() {
+        const categorySelect = document.getElementById("id_category");
+        const activitySelect = document.getElementById("id_activity_name");
+
+        // Function to fetch activities based on category ID
+        function updateActivityDropdown(categoryId, selectedActivity = null) {
+            if (categoryId) {
+                fetch(`/activities/get-activities/${categoryId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        activitySelect.innerHTML = '<option value="">Select Activity</option>';
+
+                        data.activities.forEach(function(activity) {
+                            const option = document.createElement("option");
+                            option.value = activity.id;
+                            option.textContent = activity.name;
+
+                            // Retain the previously selected activity
+                            if (activity.id == selectedActivity) {
+                                option.selected = true;
+                            }
+
+                            activitySelect.appendChild(option);
+                        });
                     });
-                });
-        } else {
-            var activitySelect = document.getElementById("id_activity_name");
-            activitySelect.innerHTML = '<option value="">Select Activity</option>';
+            } else {
+                activitySelect.innerHTML = '<option value="">Select Activity</option>';
+            }
         }
+
+        // On page load: Check if category is selected and pre-populate activities
+        const selectedCategory = "{{ request.GET.category|default:'' }}";
+        const selectedActivity = "{{ request.GET.name|default:'' }}";
+
+        if (selectedCategory) {
+            updateActivityDropdown(selectedCategory, selectedActivity);
+        }
+
+        // Event listener for category dropdown change
+        categorySelect.addEventListener("change", function() {
+            updateActivityDropdown(this.value);
+        });
     });
-    </script>
+</script>
+
 {% endblock script %}
     

@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 from django.core.paginator import Paginator
-from .forms import ActivityForm,ActivityCategoryForm
+from .forms import ActivityForm,ActivityCategoryForm,ActivityNameForm
 from .models import Activity, ActivityName, ActivityCategory,Booking
 
 def new_activity_view(request: HttpRequest):
@@ -41,6 +41,9 @@ def new_activity_view(request: HttpRequest):
 
 def update_activity_view(request:HttpRequest, activity_id):
     activity = Activity.objects.get(pk=activity_id)
+    if not request.user == activity.created_by:
+        messages.warning(request, "Access Denid! This is not your Activity", "alert-warning")
+        return redirect("main:home_page_view")
     categories = ActivityCategory.objects.all()
     activity_names = ActivityName.objects.none()
     if request.method == 'POST':
@@ -132,7 +135,6 @@ def new_category_view(request:HttpRequest):
         messages.warning(request, "Access Denid!", "alert-warning")
         return redirect("main:home_page_view")
     
-    print(request.GET.get('section'))
     activity_category_form = ActivityCategoryForm()  
     if request.method == "POST":
         try:
@@ -140,18 +142,92 @@ def new_category_view(request:HttpRequest):
             activity_category_form=ActivityCategoryForm(request.POST)
             if activity_category_form.is_valid():
                 activity_category_form.save()
-                messages.success(request, "Created activity successfully! Waiting for approval.", "alert-success")
+                messages.success(request, "Created Category successfully!", "alert-success")
                 return redirect(request.GET.get('section','/'))
             else:
-                print(activity_category_form.errors)
-                messages.error(request, "There was an error with your form. Please try again.", "alert-danger")
+                messages.error(request, f"{activity_category_form.errors.get('name', None)[0]}. Please try again.", "alert-danger")
+                return redirect(request.GET.get('section','/'))
         except Exception as e:
             messages.error(request, "something went wrong", "alert-danger")
 
-    return render (request,"categories/new_category.html")
+def update_category_view(request:HttpRequest, category_id:int):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid! ", "alert-warning")
+        return redirect("main:home_page_view")
+    category = ActivityCategory.objects.get(pk=category_id)
+    if request.method=="POST":
+        try:
+            category.name=request.POST['name']
+            category.save()
+            messages.success(request, "updated Category successfully!", "alert-success")
+            return redirect(request.GET.get('section','/'))
+        except Exception as e:
+            print(e)
+    return redirect
+  
+def delete_category_view(request:HttpRequest , category_id:int):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid! ", "alert-warning")
+        return redirect("main:home_page_view")
+    category = ActivityCategory.objects.get(pk=category_id)
+    if request.method=="POST":
+        try:
+            category.delete()
+            messages.success(request, "Deleted Category successfully!", "alert-success")
+            return redirect(request.GET.get('section','/'))
+        except Exception as e:
+            print(e)
+
+def new_activity_name_view(request:HttpRequest):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid!", "alert-warning")
+        return redirect("main:home_page_view")
+    
+    activity_name_form = ActivityNameForm()  
+    if request.method == "POST":
+        try:
+            
+            activity_name_form=ActivityNameForm(request.POST)
+            if activity_name_form.is_valid():
+                activity_name_form.save()
+                messages.success(request, "Created Activity Name successfully!", "alert-success")
+                return redirect(request.GET.get('section','/'))
+            else:
+                messages.error(request, f"{activity_name_form.errors.get('name', None)[0]}. Please try again.", "alert-danger")
+                return redirect(request.GET.get('section','/'))
+        except Exception as e:
+            messages.error(request, "something went wrong", "alert-danger")
+
+def update_activity_name_view(request:HttpRequest, activity_id:int):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid! ", "alert-warning")
+        return redirect("main:home_page_view")
+    activity_name = ActivityName.objects.get(pk=activity_id)
+    if request.method=="POST":
+        try:
+            activity_name.name=request.POST['name']
+            activity_name.save()
+            messages.success(request, "updated Activity Name successfully!", "alert-success")
+            return redirect(request.GET.get('section','/'))
+        except Exception as e:
+            print(e)
+    return redirect
+  
+def delete_activity_name_view(request:HttpRequest , activity_id:int):
+    if not request.user.is_staff:
+        messages.warning(request, "Access Denid! ", "alert-warning")
+        return redirect("main:home_page_view")
+    activity_name = ActivityName.objects.get(pk=activity_id)
+    if request.method=="POST":
+        try:
+            activity_name.delete()
+            messages.success(request, "Deleted Activity Name successfully!", "alert-success")
+            return redirect(request.GET.get('section','/'))
+        except Exception as e:
+            print(e)
 
 
-
+    
 
 def activity_status(request:HttpRequest,activity_id:int):
     if not request.user.is_staff:

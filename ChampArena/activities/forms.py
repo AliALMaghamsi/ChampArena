@@ -11,4 +11,9 @@ class ActivityCategoryForm(forms.ModelForm):
     class Meta:
         model = ActivityCategory
         fields = ['name']
+
+class ActivityNameForm(forms.ModelForm):
+    class Meta:
+        model=ActivityName
+        fields = '__all__'
        
