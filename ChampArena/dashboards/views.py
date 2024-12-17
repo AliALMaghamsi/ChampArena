@@ -138,13 +138,12 @@ def user_dashboard_view(request):
 
     return render(request, 'dashboards/user_dashboard.html', {'activities': activities,'bookings': bookings,'unread_notifications_count': unread_notifications_count, })
 
-# حذف الإشعار
+
 def delete_notification_view(request:HttpRequest, notification_id):
     try:
-        # استعلام الإشعار باستخدام المعرف
+       
         notification = get_object_or_404(Notification, id=notification_id, user=request.user)
 
-        # حذف الإشعار
         notification.delete()
 
         messages.success(request, "Notification deleted.")
