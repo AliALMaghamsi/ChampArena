@@ -81,22 +81,27 @@
                 {% if user.is_authenticated %}
     <div class="content-section" data-aos="fade-up">
         <h2>Leave a Review</h2>
-        <form method="POST" class="review-form">
-            {% csrf_token %}
-            <div class="rating-dropdown">
-                <label for="rating">Rate this activity:</label>
-                {{ form.rating }}
-            </div>
+        {% if has_booked %}
+            <form method="POST" class="review-form">
+                {% csrf_token %}
+                <div class="rating-dropdown">
+                    <label for="rating">Rate this activity:</label>
+                    {{ form.rating }}
+                </div>
 
-            <label class="review-title" for="review_text">Add comment:</label>
-            {{ form.review_text }}
+                <label class="review-title" for="review_text">Add comment:</label>
+                {{ form.review_text }}
 
-            <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
-        </form>
+                <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
+            </form>
+        {% else %}
+            <p>You must book this activity to leave a review.</p>
+        {% endif %}
     </div>
 {% else %}
     <p class="login-prompt">Only users who have joined the activity can leave a review.</p>
 {% endif %}
+
 
 
 {% if reviews %}
