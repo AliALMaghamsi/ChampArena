@@ -241,6 +241,6 @@ def activity_status(request:HttpRequest,activity_id:int):
         try:
             activity.status=request.POST['status']
             activity.save()
-            return redirect('dashboards:admin_dashboard_view',{'unread_notifications_count':unread_notifications_count})
+            return redirect('dashboards:admin_dashboard_view')
         except Exception as e :
             print(e)
