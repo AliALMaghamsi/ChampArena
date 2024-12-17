@@ -143,9 +143,9 @@
                         class="btn btn-outline-primary w-100 mt-3">
                         Contact Host
                     </a>
-                        <a  class="btn btn-outline-secondary w-100 mt-3">
-        About Host
-    </a>
+                        <a href="{% url 'accounts:host_profile' host_id=activities.created_by.id %}" class="btn btn-outline-primary w-100 mt-3">
+    About Host
+</a>
                     </div>
                 </div>
             </div>

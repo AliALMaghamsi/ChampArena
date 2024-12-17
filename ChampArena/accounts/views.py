@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm, LoginForm, ProfileEditForm
 from django.contrib.auth.models import User
-
+from .models import Profile
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -48,3 +48,16 @@ def edit_profile(request):
     else:
         form = ProfileEditForm(instance=user_profile)
     return render(request, 'accounts/edit_profile.html', {'form': form})
+
+
+@login_required
+def host_profile(request, host_id):
+    host = get_object_or_404(User, pk=host_id)
+
+    profile = host.profile
+
+    return render(request, 'accounts/host_profile.html', {'host': host, 'profile': profile})
+
+
+
+
