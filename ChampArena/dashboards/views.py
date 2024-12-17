@@ -62,7 +62,16 @@ def admin_dashboard_view(request:HttpRequest):
         paginator=Paginator(activities,5)
         display=paginator.get_page(page)  
     elif section == 'categories':
-        display=ActivityCategory.objects.all()
+        
+        page=request.GET.get('page')
+        paginator=Paginator(categories,6)
+        display=paginator.get_page(page)
+
+    elif section == 'activity_names':
+        
+        page=request.GET.get('page')
+        paginator=Paginator(activity_names,8)
+        display=paginator.get_page(page)  
 
     else:
         display=None

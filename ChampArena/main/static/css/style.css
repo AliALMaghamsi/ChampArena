@@ -1086,3 +1086,73 @@ margin:10px;
         display: inline;
     }
 }
+
+
+
+/* Custom Category Card Styling */
+.custom-card {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    position: relative;
+}
+
+.custom-card:hover {
+    transform: scale(1.05);
+}
+
+.custom-card-title {
+    text-align: center;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.custom-card:hover .custom-card-title {
+    filter: blur(2px);
+    opacity: 0.5;
+}
+
+.category-buttons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.custom-card:hover .category-buttons {
+    opacity: 1;
+}
+
+.category-buttons button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.category-buttons button.btn-delete {
+    background-color: #dc3545;
+}
+
+.category-buttons button:hover {
+    background-color: #0056b3;
+}
+
+.category-buttons button.btn-delete:hover {
+    background-color: #b52b3a;
+}
+
+.custom-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
