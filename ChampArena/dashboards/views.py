@@ -1,6 +1,6 @@
-from django.shortcuts import render , redirect
-from django.http import HttpRequest, HttpResponse
-from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant,Booking
+from django.shortcuts import render , redirect,get_object_or_404
+from django.http import HttpRequest, HttpResponse,HttpResponseRedirect
+from activities.models import Activity,ActivityCategory,ActivityName,ActivityParticipant,Booking,Notification
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.utils.timezone import now
@@ -72,12 +72,86 @@ def admin_dashboard_view(request:HttpRequest):
            
             
        
-
 def user_dashboard_view(request):
  
-    activities = Activity.objects.filter(created_by=request.user)  
+    activities = Activity.objects.filter(created_by=request.user)
 
-
+   
     bookings = Booking.objects.filter(activity__in=activities)
 
-    return render(request, 'dashboards/user_dashboard.html', {'activities': activities, 'bookings': bookings})
+    
+    unread_notifications_count = request.user.notifications.filter(is_read=False).count()
+
+   
+    unread_notifications = request.user.notifications.filter(is_read=False)
+    if unread_notifications.exists():
+        unread_notifications.update(is_read=True)
+
+    if request.method == "POST":
+        action = request.POST.get('action')
+        booking_id = request.POST.get('booking_id')
+
+        if booking_id:
+            try:
+                booking = get_object_or_404(Booking, id=booking_id, activity__in=activities)
+                
+                if action == "accept":
+                    booking.status = "Completed"
+                    booking.save()
+
+                 
+                    notification_message = f"Your booking for {booking.activity.name} has been accepted."
+                    Notification.objects.create(user=booking.user, message=notification_message)
+
+                    messages.success(request, "The request accepted successfully", 'alert-success')
+
+                elif action == "reject":
+                    booking.status = "Cancelled"
+                    booking.delete()  
+                    notification_message = f"Your booking for {booking.activity.name} has been rejected."
+                    Notification.objects.create(user=booking.user, message=notification_message)
+
+                else:
+                    return render(request, 'dashboards/user_dashboard.html', {
+                        'activities': activities,
+                        'bookings': bookings,
+                        'error': 'Invalid action.',
+                        'unread_notifications_count': unread_notifications_count,
+                    })
+
+                return redirect('user_dashboard_view')
+
+            except Exception as e:
+                return render(request, 'dashboards/user_dashboard.html', {
+                    'activities': activities,
+                    'bookings': bookings,
+                    'error': f"An error occurred: {str(e)}",
+                    'unread_notifications_count': unread_notifications_count,
+                })
+        else:
+            return render(request, 'dashboards/user_dashboard.html', {
+                'activities': activities,
+                'bookings': bookings,
+                'error': 'Booking ID is missing.',
+                'unread_notifications_count': unread_notifications_count,
+            })
+
+    return render(request, 'dashboards/user_dashboard.html', {'activities': activities,'bookings': bookings,'unread_notifications_count': unread_notifications_count, })
+
+# حذف الإشعار
+def delete_notification_view(request:HttpRequest, notification_id):
+    try:
+        # استعلام الإشعار باستخدام المعرف
+        notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+
+        # حذف الإشعار
+        notification.delete()
+
+        messages.success(request, "Notification deleted.")
+
+    except Notification.DoesNotExist:
+        messages.error(request, "Notification not found.")
+
+ 
+    next_url = request.GET.get('next', 'user_dashboard_view') 
+    return HttpResponseRedirect(next_url)

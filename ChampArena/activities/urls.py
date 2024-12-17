@@ -13,4 +13,5 @@ urlpatterns=[
   path('book/<int:activity_id>/', views.book_activity, name='book_activity'),
   path('category/new/',views.new_category_view,name='new_category_view'),
   path('status/<activity_id>/',views.activity_status,name='activity_status'),
+  
 ]
