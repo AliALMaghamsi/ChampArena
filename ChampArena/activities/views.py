@@ -358,3 +358,17 @@ def activity_status(request:HttpRequest,activity_id:int):
             return redirect('dashboards:admin_dashboard_view')
         except Exception as e :
             print(e)
+
+
+
+def delete_activity(request:HttpRequest,activity_id):
+    try:
+        activity=Activity.objects.get(pk=activity_id)
+        activity.delete()
+        messages.success( request,"Delete activity successfuly","alert-success")
+    except Exception as e:
+        print(e)
+        messages.error(request,"Couldn't Delete activity",'alert-danger')
+
+    return redirect('dashboards:user_dashboard_view')
+    

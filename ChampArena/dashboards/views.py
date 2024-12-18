@@ -82,20 +82,28 @@ def admin_dashboard_view(request:HttpRequest):
             
        
 def user_dashboard_view(request):
- 
+    # Get all activities created by the logged-in user
     activities = Activity.objects.filter(created_by=request.user)
-
-   
-    bookings = Booking.objects.filter(activity__in=activities)
-
     
-    unread_notifications_count = request.user.notifications.filter(is_read=False).count()
+    # Filter bookings based on selected activity (if provided)
+    activity_id = request.GET.get('activity_id')  # Get the activity ID from the request
+    if activity_id:
+        selected_activity = get_object_or_404(activities, id=activity_id)
+        bookings = Booking.objects.filter(activity=selected_activity)
+    else:
+        selected_activity = None
+        bookings = Booking.objects.filter(activity__in=activities)
+    
+    # Get activities booked by the logged-in user
+    booked_activities = Booking.objects.filter(user=request.user).select_related('activity')
 
-   
+    # Count unread notifications
+    unread_notifications_count = request.user.notifications.filter(is_read=False).count()
     unread_notifications = request.user.notifications.filter(is_read=False)
     if unread_notifications.exists():
         unread_notifications.update(is_read=True)
 
+    # Handle POST requests for Accept/Reject actions
     if request.method == "POST":
         action = request.POST.get('action')
         booking_id = request.POST.get('booking_id')
@@ -103,51 +111,36 @@ def user_dashboard_view(request):
         if booking_id:
             try:
                 booking = get_object_or_404(Booking, id=booking_id, activity__in=activities)
-                
                 if action == "accept":
                     booking.status = "Completed"
                     booking.save()
 
-                 
+                    # Send notification to the user
                     notification_message = f"Your booking for {booking.activity.name} has been accepted."
                     Notification.objects.create(user=booking.user, message=notification_message)
-
-                    messages.success(request, "The request accepted successfully", 'alert-success')
+                    messages.success(request, "The request was accepted successfully.", 'alert-success')
 
                 elif action == "reject":
                     booking.status = "Cancelled"
-                    booking.delete()  
+                    booking.delete()
+
                     notification_message = f"Your booking for {booking.activity.name} has been rejected."
                     Notification.objects.create(user=booking.user, message=notification_message)
+                    messages.success(request, "The request was rejected successfully.", 'alert-danger')
 
-                else:
-                    return render(request, 'dashboards/user_dashboard.html', {
-                        'activities': activities,
-                        'bookings': bookings,
-                        'error': 'Invalid action.',
-                        'unread_notifications_count': unread_notifications_count,
-                    })
-
-                return redirect('user_dashboard_view')
+                return redirect('dashboards:user_dashboard_view')
 
             except Exception as e:
-                return render(request, 'dashboards/user_dashboard.html', {
-                    'activities': activities,
-                    'bookings': bookings,
-                    'error': f"An error occurred: {str(e)}",
-                    'unread_notifications_count': unread_notifications_count,
-                })
-        else:
-            return render(request, 'dashboards/user_dashboard.html', {
-                'activities': activities,
-                'bookings': bookings,
-                'error': 'Booking ID is missing.',
-                'unread_notifications_count': unread_notifications_count,
-            })
-
-    return render(request, 'dashboards/user_dashboard.html', {'activities': activities,'bookings': bookings,'unread_notifications_count': unread_notifications_count, })
-
-
+                messages.error(request, f"An error occurred: {str(e)}", 'alert-danger')
+    
+    context = {
+        'activities': activities,
+        'selected_activity': selected_activity,
+        'bookings': bookings,
+        'booked_activities': booked_activities,
+        'unread_notifications_count': unread_notifications_count,
+    }
+    return render(request, 'dashboards/user_dashboard.html', context)
 def delete_notification_view(request:HttpRequest, notification_id):
     try:
        
@@ -163,3 +156,5 @@ def delete_notification_view(request:HttpRequest, notification_id):
  
     next_url = request.GET.get('next', 'user_dashboard_view') 
     return HttpResponseRedirect(next_url)
+
+
