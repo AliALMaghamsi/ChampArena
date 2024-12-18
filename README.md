@@ -36,7 +36,7 @@ Secure payments, wallet usage, and transaction history
 
 
 ## Wireframes
-- [(wireframe link here.)](https://www.figma.com/design/U5yB0z0VeRxOMvCXOX9qLI/capstone?node-id=0-1&t=DZAUdJvwgCxnhwWY-1)
+# [(wireframe link here.)](https://www.figma.com/design/U5yB0z0VeRxOMvCXOX9qLI/capstone?node-id=0-1&t=DZAUdJvwgCxnhwWY-1)
 
 
 ## UML
