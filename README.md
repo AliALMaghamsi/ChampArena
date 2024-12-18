@@ -1,4 +1,4 @@
-## (Project Name)
+## (ChampArena)
 ChampArena
 
 - **Overview:** 
