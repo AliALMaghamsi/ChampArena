@@ -30,13 +30,9 @@ Secure payments, wallet usage, and transaction history
 
 
 
-## User Stories, Wireframes & UML 
+## User Stories
 ![User Stories](assets/user_stories.png)
-- [(wireframe link here.)](https://www.figma.com/design/U5yB0z0VeRxOMvCXOX9qLI/capstone?node-id=0-1&t=DZAUdJvwgCxnhwWY-1)
 
-
-
-![User Stories](assets/user_stories.png)
 
 
 ## Wireframes
