@@ -12,38 +12,84 @@
             <p class="text-muted">@{{ user.profile.user.username }}</p>
         </div>
         <ul class="sidebar-nav">
+
             <li>
-                <a href="{% url 'accounts:profile' %}"><i class="bi bi-person-fill me-2"></i>Profile</a>
+                <a href="javascript:void(0);" onclick="showSection('activities')"><i class="bi bi-calendar-event me-2"></i>My Activities</a>
             </li>
             <li>
-                <a href="#activities"><i class="bi bi-calendar-event me-2"></i>My Activities</a>
+                <a href="javascript:void(0);" onclick="showSection('booked_activities')"><i class="bi bi-calendar-event me-2"></i>My Booked Activities</a>
             </li>
-          
-          
             <li>
-                <a href="#requests"><i class="bi bi-envelope me-2"></i>Requests
-                    <span class="badge bg-primary ms-2">{{user.activities.count}}</span>
+                <a href="javascript:void(0);" onclick="showSection('requests')"><i class="bi bi-envelope me-2"></i>Requests
+                    <span class="badge bg-primary ms-2">{{ user.activities.count }}</span>
                 </a>
             </li>
-
-         
         </ul>
     </div>
 
     <div class="dashboard-main">
-       
         <div class="dashboard-header">
             <h1>Dashboard</h1>
-            <a href="{% url 'activities:new_activity_view' %}"> <button class="btn btn-primary">
+            <a href="{% url 'activities:new_activity_view' %}"><button class="btn btn-primary">
                <i class="bi bi-plus-lg me-2"></i>Create Activity
             </button></a>
         </div>
 
 
+        <div class="dashboard-section" id="booked_activities" style="display:none;">
+            <h2>My Booked Activities</h2>
+            <div class="row g-4">
+                {% for booking in booked_activities %}
+                <div class="col-md-6">
+                    <div class="card" style="color: aliceblue;">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">{{ booking.activity.name }}</h3>
+                            <span class="badge bg-primary">{{ booking.status }}</span>
+                        </div>
+                        <div class="card-body">
+                            <p><i class="bi bi-calendar3 me-2"></i>{{ booking.activity.start_date|date:"M d, Y" }}</p>
+                            <p><i class="bi bi-clock me-2"></i>{{ booking.activity.start_date|time:"H:i" }}</p>
+                            <p><i class="bi bi-geo-alt me-2"></i>{{ booking.activity.location }}</p>
+                            {% if booking.activity.created_by %}
+                            <a href="{% url 'accounts:host_profile' host_id=booking.activity.created_by.id %}" class="btn btn-outline-primary w-100 mt-3">About Host</a>
+                        {% else %}
+                            <p>No host available.</p>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No activities booked yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="dashboard-section" id="requests">
+            
 
         
-        <div class="dashboard-section">
-            <h2>Pending Requests</h2>
+
+            <div class="dashboard-section mb-4"id="filter-section">
+
+                <form method="get" id="filter-form">
+                    <h2 class="d-flex justify-content-between align-items-center">
+                        Pending Requests
+
+                        <div class="input-group ms-3" style="max-width: 300px;">
+                            <select name="activity_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="">All Activities</option>
+                                {% for activity in activities %}
+                                <option value="{{ activity.id }}" {% if selected_activity and activity.id == selected_activity.id %}selected{% endif %}>
+                                    {{ activity.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                </form>
+            </div>
+        
+
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -61,8 +107,7 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                
-                                   <a href="{% url 'accounts:profile' %}"> {{ request.user.username }}</a>
+                                    <a href="{% url 'accounts:profile' %}">{{ request.user.username }}</a>
                                 </div>
                             </td>
                             <td>{{ request.activity.name.name }}</td>
@@ -94,7 +139,8 @@
             </div>
         </div>
 
-        <div class="dashboard-section">
+
+        <div class="dashboard-section" id="activities" style="display:none;">
             <h2>My Activities</h2>
             <div class="row g-4">
                 {% for activity in activities %}
@@ -112,23 +158,7 @@
                         </div>
                         <div class="activity-footer">
                             <a href="{% url 'activities:detail_activity_view' activity.id %}"><button class="btn btn-outline-primary btn-sm">View Details</button></a>
-                            <button class="btn btn-outline-danger btn-sm">Cancel</button>
-
-                           
-                            {% if activity.bookings %}
-                                <h5>Requests to Join:</h5>
-                                <ul>
-                                    {% for booking in activity.bookings %}
-                                        <li>
-                                            {{ booking.user.username }}
-                                            <button class="btn btn-success btn-sm">Accept</button>
-                                            <button class="btn btn-danger btn-sm">Reject</button>
-                                        </li>
-                                    {% empty %}
-                                        <li>No requests yet.</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
+                            <a href="{% url 'activities:delete_activity' activity.id %}"><button class="btn btn-outline-danger btn-sm">Cancel</button></a>
                         </div>
                     </div>
                 </div>
@@ -137,7 +167,29 @@
                 {% endfor %}
             </div>
         </div>
+
     </div>
 </div>
+
+<script>
+
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.dashboard-section');
+    sections.forEach(function(section) {
+        section.style.display = 'none'; 
+    });
+
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) {
+        activeSection.style.display = 'block'; 
+    }
+
+
+    const filterSection = document.getElementById('filter-section');
+    if (filterSection) {
+        filterSection.style.display = 'block';
+    }
+}
+</script>
 
 {% endblock %}
