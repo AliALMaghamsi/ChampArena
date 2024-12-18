@@ -8,15 +8,33 @@
             <h2>Edit Profile</h2>
             <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
                 {% csrf_token %}
-                  {% if user.profile.profile_picture %}
-                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="100">
+                <div class="profile-picture-preview">
+                    {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" width="150">
                     {% else %}
-                        <img src="/static/default-avatar.png" alt="Default Avatar" width="100">
+                        <img src="/static/default-avatar.png" alt="Default Avatar" width="150">
                     {% endif %}
-                {{ form.as_p }}
+                </div>
+                <input type="file" name="profile_picture" id="id_profile_picture" style="display: none;" class="profile-image-input">
+                <label for="id_profile_picture" class="upload-label">Change Picture</label>
+                <div class="form-field">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-field">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="form-field">
+                    <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                    {{ form.phone_number }}
+                </div>
+                <div class="form-field">
+                    <label for="{{ form.location.id_for_label }}">Location</label>
+                    {{ form.location }}
+                </div>
                 <button type="submit">Save Changes</button>
             </form>
-            <a href="{% url 'accounts:profile' %}">Cancel</a>
         </div>
     </div>
 {% endblock %}
