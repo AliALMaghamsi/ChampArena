@@ -146,3 +146,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 load_dotenv()
 STRIPE_PUBLIC_KEY =os.environ.get("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY=os.environ.get("STRIPE_SECRET_KEY")
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'django_errors.log',
+        },
+    },
+    'loggers': {
+        '': {  # Root logger
+            'handlers': ['console', 'file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+#api for claude
+ANTHROPIC_API_KEY=os.environ.get("ANTHROPIC_API_KEY")

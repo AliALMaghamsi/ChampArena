@@ -3,11 +3,67 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 from django.core.paginator import Paginator
-
 from .forms import ActivityForm,ActivityCategoryForm,ActivityNameForm,ReviewForm
 from .models import Activity, ActivityName, ActivityCategory,Booking,Notification,Review
 from django.utils import timezone
 
+import anthropic
+from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
+
+def moderate_content_with_claude(title: str, description: str) -> bool:
+    """
+    Use Claude to check if content is inappropriate in both English and Arabic.
+    Returns True if content is clean, False if inappropriate.
+    """
+    try:
+        client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        
+        # Multilingual content moderation prompt
+        prompt = f"""You are a multilingual content moderator. Carefully review the following text for any potentially inappropriate, offensive, or problematic content in both Arabic and English:
+
+Title: {title}
+Description: {description}
+
+Evaluation Criteria:
+1. Check for offensive language or hate speech in Arabic and English
+2. Look for inappropriate content, including:
+   - Explicit or vulgar language
+   - Threats or harassment
+   - Discriminatory remarks
+   - Inappropriate references
+3. Consider cultural sensitivities in both Arabic and English contexts
+
+Respond STRICTLY with:
+- 'CLEAN' if the content is completely appropriate in both languages
+- 'NOT_CLEAN' if there are any concerns about the content
+
+Your response must be either 'CLEAN' or 'NOT_CLEAN'. Be very strict in your evaluation and consider nuances in both Arabic and English languages."""
+
+        response = client.messages.create(
+            model="claude-3-sonnet-20240229",  # Using a more capable model for multilingual content
+            max_tokens=150,
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        # Extract and parse the response more robustly
+        moderation_result = response.content[0].text.strip().upper()
+        
+        # Print the raw response for debugging
+        print(f"Raw moderation response: {moderation_result}")
+        
+        # Check for the specific response
+        return moderation_result == 'CLEAN'
+    
+    except Exception as e:
+        # Use proper logging instead of print
+        logger.error(f"Content moderation error: {e}")
+        # In case of any error, default to not approving
+        return False
 
 def new_activity_view(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -23,17 +79,35 @@ def new_activity_view(request: HttpRequest):
         try:
             activity_form = ActivityForm(request.POST, request.FILES)
             if activity_form.is_valid():
-                activity:Activity = activity_form.save(commit=False)
+                activity :Activity = activity_form.save(commit=False)
                 activity.created_by = request.user
+                
+                # Get title and description directly from form
+                title = activity_form.cleaned_data.get('title', '')
+                description = activity_form.cleaned_data.get('description', '')
+                
+                is_content_clean = moderate_content_with_claude(
+                    title=title, 
+                    description=description
+                )
+                
+                if is_content_clean:
+                    activity.status = 'approved'  
+                    messages.success(request, "Created and approved activity successfully!", "alert-success")
+                else:
+                   
+                    messages.warning(request, "Activity requires manual review.", "alert-warning")
+                
                 activity.save()
-
-                messages.success(request, "Created activity successfully! Waiting for approval.", "alert-success")
-                return redirect("main:home_page_view")
+                return redirect("dashboards:user_dashboard_view")
             else:
-                print(activity_form.errors)
+                # Log form errors
+                logger.error(f"Form errors: {activity_form.errors}")
                 messages.error(request, "There was an error with your form. Please try again.", "alert-danger")
         except Exception as e:
-            print(e)
+            # Log the full exception
+            logger.error(f"Unexpected error: {e}", exc_info=True)
+            messages.error(request, "An unexpected error occurred.", "alert-danger")
 
     return render(request, "activities/new_activity.html", context={
         "form": activity_form,
@@ -52,10 +126,29 @@ def update_activity_view(request:HttpRequest, activity_id):
     if request.method == 'POST':
         try:
             form = ActivityForm(request.POST,request.FILES, instance=activity)
+            
             if form.is_valid():
+                
+                activity :Activity = form.save(commit=False)
+                title = form.cleaned_data.get('title', '')
+                description = form.cleaned_data.get('description', '')
+
+                is_content_clean = moderate_content_with_claude(
+                    title=title, 
+                    description=description
+                )
+                
+                if is_content_clean:
+                    activity.status = 'approved'  
+                    messages.success(request, "Created and approved activity successfully!", "alert-success")
+                    
+                else:
+                    activity.status = 'in_review'  
+                    messages.warning(request, "Activity requires manual review.", "alert-warning")
+
                 form.save()
-                messages.success(request, 'Activity updated successfully!','danger')
-                return redirect('main:home_page_view')
+                
+                return redirect("dashboards:user_dashboard_view")
             else:
                 messages.error(request, 'There was an error updating the activity.')
         except Exception as e:
