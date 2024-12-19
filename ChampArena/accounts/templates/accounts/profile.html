@@ -22,21 +22,12 @@
                 <p><strong>Phone Number:</strong> {{ user.profile.phone_number }}</p>
                 <p><strong>Location:</strong> {{ user.profile.location }}</p>
 
-                <p><strong>Recent Activity:</strong></p>
-                <ul>
-                    {% if activities %}
-                        {% for activity in activities %}
-                            <li>{{ activity.name }} (Created on: {{ activity.created_at }})</li>
-                        {% endfor %}
-                    {% else %}
-                        <li>No recent activities found.</li>
-                    {% endif %}
-                </ul>
+                
             </div>
 
             <div class="profile-actions">
                 <a href="{% url 'accounts:edit_profile' %}">Edit</a>
-                <a href="{% url 'payment:card_payment_view' %}">Payment</a>
+                <a href="{% url 'payment:card_payment_view' %}">ِAdd Balance</a>
                 <a href="{% url 'accounts:logout' %}" class="logout">Logout</a>
             </div>
         </div>

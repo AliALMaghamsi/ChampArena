@@ -148,7 +148,7 @@ def delete_notification_view(request:HttpRequest, notification_id):
 
         notification.delete()
 
-        messages.success(request, "Notification deleted.")
+        messages.success(request, "Notification deleted." "alert-success")
 
     except Notification.DoesNotExist:
         messages.error(request, "Notification not found.")
