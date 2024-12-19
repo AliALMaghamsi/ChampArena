@@ -22,7 +22,7 @@
     
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'main:home_page_view' %}">ChampArena</a>
+            <a class="navbar-brand" href="{% url 'main:home_page_view' %}"><img src="" alt=""></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,8 +32,11 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'activities:all_activities_view' %}">activatis</a></li>
                     
                     
-                    <li class="nav-item"><a class="nav-link" href="#about">about</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link"  href="{% url 'main:contact_page_view'%}">Contact</a></li>
+                    {% if request.user.is_staff%}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboards:admin_dashboard_view' %}"> Admin Dashboard</a></li>
+                    {% endif %}
+
                   {% if user.is_authenticated %}
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,6 +49,9 @@
         <ul class="dropdown-menu" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'dashboards:user_dashboard_view' %}">Dashboard</a></li>
+            {% if request.user.is_staff%}
+            <li><a class="dropdown-item" href="{% url 'dashboards:admin_dashboard_view' %}"> Admin Dashboard</a></li>
+            {% endif %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
         </ul>
@@ -53,6 +59,7 @@
 {% else %}
     <li class="nav-item"><a class="nav-link nav-button" href="{% url 'accounts:register' %}">Join Now</a></li>
 {% endif %}
+
 
 
                     <div id="notifications" class="dropdown">
@@ -122,16 +129,15 @@
                     <div class="col-lg-2 col-md-4 mb-4">
                         <h5 class="footer-title">Quick Links</h5>
                         <ul class="footer-links">
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#home">Home</a></li>
+                            <li><a href="{% url 'main:home_page_view'%}">Home</a></li>
+                            <li><a href="{% url 'activities:all_activities_view' %}">activatis</a></li>
+
                         </ul>
                     </div>
                     <div class="col-lg-2 col-md-4 mb-4">
                         <h5 class="footer-title">Support</h5>
                         <ul class="footer-links">
-                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="{% url 'main:contact_page_view'%}">Contact</a></li>
                             <li><a href="#faq">FAQ</a></li>
                           
                         </ul>
