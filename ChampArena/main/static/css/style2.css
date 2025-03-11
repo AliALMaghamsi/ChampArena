@@ -560,3 +560,68 @@
     font-size: 1rem;
     margin-bottom: 0.5rem;
 }
+
+/* Profile Edit Page Image Upload */
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: auto;
+}
+
+.profile-edit-form input[type="file"] {
+    padding: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: var(--card-bg);
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+.profile-edit-form input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent-green);
+    box-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+}
+
+.profile-edit-form img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 50%;
+    margin-top: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 255, 157, 0.2);
+}
+
+@media (max-width: 768px) {
+    .profile-edit-form {
+        padding: 20px;
+    }
+}
+.edit-profile-form input[type="file"] {
+    display: none;
+}
+.profile-picture-preview img {
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 255, 157, 0.2);
+    margin-bottom: 1rem;
+    max-width: 150px;
+    height: auto;
+}
+.edit-profile-form label[for="id_profile_picture"] {
+    cursor: pointer;
+    color: var(--accent-green);
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 10px;
+    border: 1px solid var(--accent-green);
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-profile-form label[for="id_profile_picture"]:hover {
+    background-color: var(--accent-green);
+    color: var(--dark-bg);
+}

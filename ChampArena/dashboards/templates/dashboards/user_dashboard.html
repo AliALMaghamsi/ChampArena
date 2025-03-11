@@ -146,8 +146,10 @@
                 {% for activity in activities %}
                 <div class="col-md-6">
                     <div class="activity-card">
+                        <h3>{{ activity.name }}</h3>
                         <div class="activity-header">
-                            <h3>{{ activity.name }}</h3>
+                         
+                            <h3>{{ activity.title }}</h3>
                             <span class="badge bg-success">Active</span>
                         </div>
                         <div class="activity-details">
@@ -158,8 +160,9 @@
                         </div>
                         <div class="activity-footer">
                             <a href="{% url 'activities:detail_activity_view' activity.id %}"><button class="btn btn-outline-primary btn-sm">View Details</button></a>
-                            <a href="{% url 'activities:delete_activity' activity.id %}"><button class="btn btn-outline-danger btn-sm">Cancel</button></a>
                             <a href="{% url 'activities:update_activity_view' activity.id %}"><button class="btn btn-outline-primary btn-sm">Update</button></a>
+                            <a href="{% url 'activities:delete_activity' activity.id %}"><button class="btn btn-outline-danger btn-sm">Delete</button></a>
+
                         </div>
                     </div>
                 </div>

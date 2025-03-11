@@ -4,13 +4,8 @@
 
 {% block content %}
 {% load static %}
-
-<!-- Link to the Login-Specific CSS File -->
 <link rel="stylesheet" type="text/css" href="{% static 'css/style2.css' %}">
-
-<!-- Register Page Container -->
 <div class="register-page">
-
     <div class="register-container">
         <div class="existing-account">
             <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
@@ -21,30 +16,19 @@
             <div class="register-form-fields">
                 <label for="id_username">Username:</label>
                 {{ form.username }}
-
                 <label for="id_email">Email address:</label>
                 {{ form.email }}
-
                 <label for="id_first_name">First name:</label>
                 {{ form.first_name }}
-
-                <label for="id_last_name">Last name:</label>
-                {{ form.last_name }}
-
-                <label for="id_password1">Password:</label>
+                <label for="id_phone_number">Phone Number:</label>
+                {{ form.phone_number }}
+                <label for="id_password">Password:</label>
                 {{ form.password }}
-
-                <label for="id_password2">Confirm Password:</label>
-                {{ form.password2 }}
-
                 <label for="id_location">Location:</label>
                 {{ form.location }}
-
                 <button type="submit" class="register-button">Register</button>
             </div>
         </form>
-
-
     </div>
 </div>
 {% endblock %}
